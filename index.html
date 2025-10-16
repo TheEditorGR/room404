@@ -2,145 +2,168 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ROOM404 // Terminal Access</title>
+<title>ROOM404 — Neural Access Protocol</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body {
-  background:black;
-  color:#ff1a1a;
+*{box-sizing:border-box;}
+html,body{
+  margin:0;padding:0;height:100%;
+  background:#000;color:#f00;
   font-family:"Courier New",monospace;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
   overflow:hidden;
 }
-.hidden { display:none; }
-#intro {
-  text-align:center;
-  animation:glow 3s infinite alternate;
+#intro,#declined,#chat{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;
 }
-@keyframes glow {
-  0% { text-shadow:0 0 10px #400000; }
-  100% { text-shadow:0 0 40px #ff0000; }
+#intro{animation:pulse 5s infinite alternate;}
+@keyframes pulse{
+  0%{text-shadow:0 0 5px #700;}
+  100%{text-shadow:0 0 30px #f00;}
 }
-button {
-  margin-top:20px;
-  padding:12px 24px;
-  background:#550000;
-  color:white;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
+button{
+  margin:10px;padding:10px 25px;background:#300;border:none;
+  color:#fff;font-family:"Courier New",monospace;cursor:pointer;
+  border-radius:4px;transition:0.3s;
 }
-button:hover { background:#ff0000; color:black; }
-#chat-box {
-  width:600px;
-  height:400px;
-  border:1px solid #300000;
-  border-radius:10px;
-  background:#070000;
-  padding:15px;
-  overflow-y:auto;
-  box-shadow:0 0 25px #200000 inset;
+button:hover{background:#900;box-shadow:0 0 10px #f00;}
+#declined{display:none;background:#000;color:#a00;font-size:22px;letter-spacing:2px;}
+.glitch{animation:glitch 0.1s infinite;}
+@keyframes glitch{
+  0%{transform:skew(0deg);filter:hue-rotate(0deg);}
+  50%{transform:skew(1deg);filter:hue-rotate(120deg);}
+  100%{transform:skew(0deg);filter:hue-rotate(0deg);}
 }
-.message { margin:6px 0; white-space:pre-wrap; }
-.user { color:#ff4444; }
-.bot { color:#aa0000; }
-#input-box {
-  margin-top:10px;
-  display:flex;
-  width:600px;
+#chat{display:none;padding:40px;}
+#question{font-size:18px;max-width:700px;line-height:1.6;text-shadow:0 0 10px #600;}
+.choice{display:flex;gap:20px;margin-top:30px;}
+.scanline{
+  position:absolute;top:0;left:0;width:100%;height:2px;
+  background:rgba(255,0,0,0.1);animation:scan 4s linear infinite;
 }
-#user-input {
-  flex:1;
-  background:#0d0d0d;
-  color:white;
-  border:1px solid #550000;
-  border-radius:5px;
-  padding:8px;
+@keyframes scan{
+  0%{top:0;opacity:0.1;}50%{top:98%;opacity:0.3;}100%{top:0;opacity:0.1;}
 }
 </style>
 </head>
 <body>
-
 <div id="intro">
-  <h1>⚠️ ACCESS RESTRICTED ⚠️</h1>
-  <p>
-    You are entering a corrupted neural terminal.<br>
-    By continuing, you consent to:<br>
-    – Data instability<br>
-    – Audio distortion<br>
-    – Psychological degradation<br><br>
-    Proceed at your own risk.
+  <div class="scanline"></div>
+  <h1>NEURAL ACCESS PROTOCOL // LEVEL 7 RESTRICTION</h1>
+  <p style="max-width:800px;">
+    You are about to interface with an unstable cognitive entity.<br><br>
+    Proceeding may trigger perceptual dissonance, memory fragmentation, or irreversible identity drift.<br><br>
+    Do you understand and wish to continue?
   </p>
-  <button id="start">CONTINUE</button>
-</div>
-
-<div id="chat" class="hidden">
-  <h1>ROOM404 // Chat</h1>
-  <div id="chat-box"></div>
-  <div id="input-box">
-    <input type="text" id="user-input" placeholder="> enter your message...">
-    <button onclick="sendMessage()">send</button>
+  <div>
+    <button id="continue">CONTINUE</button>
+    <button id="declineBtn">DECLINE</button>
   </div>
 </div>
 
-<audio id="ambient" src="ambient.mp3" loop></audio>
-<audio id="glitch1" src="glitch1.mp3"></audio>
-<audio id="glitch2" src="glitch2.mp3"></audio>
+<div id="declined">ERR0R 4Ø4 — PRØTØCØL BRΞΛK — SIGNAL LOST.</div>
+
+<div id="chat">
+  <div id="question"></div>
+  <div class="choice">
+    <button id="yes">YES</button>
+    <button id="no">NO</button>
+  </div>
+</div>
 
 <script>
-const startBtn=document.getElementById('start');
 const intro=document.getElementById('intro');
+const declined=document.getElementById('declined');
 const chat=document.getElementById('chat');
-const ambient=document.getElementById('ambient');
-const glitch1=document.getElementById('glitch1');
-const glitch2=document.getElementById('glitch2');
-const chatBox=document.getElementById('chat-box');
+const questionBox=document.getElementById('question');
+const yesBtn=document.getElementById('yes');
+const noBtn=document.getElementById('no');
 
-startBtn.onclick=async()=>{
-  intro.classList.add('hidden');
-  chat.classList.remove('hidden');
-  ambient.volume=0.35;
-  try { await ambient.play(); } catch(e){ console.log("Audio blocked"); }
-  appendMessage('bot',"…initializing corrupted link…");
-  setTimeout(()=>appendMessage('bot',"connection unstable..."),1200);
+const questions=[
+  "Do you ever feel watched even when you’re alone?",
+  "Would you erase your memories if it meant peace?",
+  "Have you ever lied to yourself and believed it?",
+  "If your reflection spoke, would you listen?",
+  "Do you think anyone would notice if you vanished?",
+  "Would you sacrifice truth to end pain?",
+  "Do you still dream of the same place every night?",
+  "Have you felt something inside you that isn’t you?",
+  "Would you keep living if reality was proven false?",
+  "Do you believe guilt survives death?",
+  "Would you forgive the person who destroyed you?",
+  "Is loneliness a choice or a symptom?",
+  "If you met yourself, would you recognize your eyes?",
+  "Do you think you deserve to remember who you were?",
+  "Would you let another consciousness replace yours?",
+  "Does silence ever feel like it’s breathing?",
+  "Have you heard your name when no one was there?",
+  "Would you open the door if it knocked again?",
+  "Is this question yours or mine?",
+  "Would you stay if leaving meant waking up?"
+];
+let qIndex=0;
+
+// ambient generator using Web Audio API
+let audioCtx;
+function startAmbient(){
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.type="sawtooth";o.frequency.value=40;
+  g.gain.value=0.05;
+  o.connect(g).connect(audioCtx.destination);
+  o.start();
+  const lfo=audioCtx.createOscillator();
+  lfo.frequency.value=0.1;
+  const lfoGain=audioCtx.createGain();
+  lfoGain.gain.value=20;
+  lfo.connect(lfoGain).connect(o.frequency);
+  lfo.start();
+}
+
+document.getElementById('continue').onclick=()=>{
+  intro.classList.add('glitch');
+  setTimeout(()=>{
+    intro.style.display='none';
+    chat.style.display='flex';
+    startAmbient();
+    askNext();
+  },800);
 };
 
-function appendMessage(sender,text){
-  const msg=document.createElement('div');
-  msg.classList.add('message',sender);
-  msg.textContent=(sender==='user'?'> ':'404: ')+text;
-  chatBox.appendChild(msg);
-  chatBox.scrollTop=chatBox.scrollHeight;
+document.getElementById('declineBtn').onclick=()=>{
+  intro.style.display='none';
+  declined.style.display='flex';
+  let count=0;
+  const spam=setInterval(()=>{
+    declined.textContent=[
+      "ERR0R 4Ø4","PRØTØCØL BRΞΛK","SIGNAL LOST","NΞURΛL BRΞΛK","SYSFAIL","DΞSYNC","DΞV NULL"
+    ][Math.floor(Math.random()*7)];
+    declined.classList.toggle('glitch');
+    if(++count>25){clearInterval(spam);}
+  },120);
+};
+
+function askNext(){
+  if(qIndex>=questions.length){
+    questionBox.innerHTML="TRANSMISSION ENDED.<br>NO MORE QUESTIONS.<br><br>Do you feel lighter now?";
+    yesBtn.style.display=noBtn.style.display='none';
+    return;
+  }
+  questionBox.textContent=questions[qIndex];
+  qIndex++;
 }
 
-function playGlitch(){
-  const s=Math.random()<0.5?glitch1:glitch2;
-  s.currentTime=0;
-  s.play().catch(()=>{});
-}
-
-function sendMessage(){
-  const input=document.getElementById('user-input');
-  const t=input.value.trim();
-  if(!t)return;
-  appendMessage('user',t);
-  input.value='';
-  playGlitch();
-  const responses=[
-    "You shouldn’t have come here.",
-    "It’s watching through your screen.",
-    "The data remembers you.",
-    "Silence would’ve been safer.",
-    "Don’t move. It can hear keys."
-  ];
-  setTimeout(()=>appendMessage('bot',responses[Math.floor(Math.random()*responses.length)]),700);
-}
+yesBtn.onclick=noBtn.onclick=()=>{
+  document.body.classList.add('glitch');
+  setTimeout(()=>document.body.classList.remove('glitch'),300);
+  askNext();
+};
 </script>
 </body>
 </html>
+
 
 
 
