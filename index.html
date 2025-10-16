@@ -2,64 +2,88 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ROOM404 // Chat Protocol</title>
+<title>ROOM404 // Terminal Access</title>
 <style>
 body {
-  background-color: black;
-  color: #ff1a1a;
-  font-family: "Courier New", monospace;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: hidden;
+  background:black;
+  color:#ff1a1a;
+  font-family:"Courier New",monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  overflow:hidden;
 }
-#chat-box {
-  width: 600px;
-  height: 400px;
-  border: 1px solid #330000;
-  background: #070000;
-  border-radius: 10px;
-  padding: 15px;
-  overflow-y: auto;
-  box-shadow: 0 0 20px #200000 inset;
+.hidden { display:none; }
+#intro {
+  text-align:center;
+  animation:glow 3s infinite alternate;
 }
-.message { margin: 5px 0; white-space: pre-wrap; }
-.user { color: #ff4444; }
-.bot { color: #aa0000; }
-#input-box {
-  margin-top: 15px;
-  display: flex;
-  width: 600px;
-}
-#user-input {
-  flex: 1;
-  background: #0d0d0d;
-  color: white;
-  border: 1px solid #550000;
-  border-radius: 5px;
-  padding: 8px;
+@keyframes glow {
+  0% { text-shadow:0 0 10px #400000; }
+  100% { text-shadow:0 0 40px #ff0000; }
 }
 button {
-  background: #660000;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 16px;
-  margin-left: 5px;
-  cursor: pointer;
+  margin-top:20px;
+  padding:12px 24px;
+  background:#550000;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
 }
-button:hover { background: #ff0000; }
+button:hover { background:#ff0000; color:black; }
+#chat-box {
+  width:600px;
+  height:400px;
+  border:1px solid #300000;
+  border-radius:10px;
+  background:#070000;
+  padding:15px;
+  overflow-y:auto;
+  box-shadow:0 0 25px #200000 inset;
+}
+.message { margin:6px 0; white-space:pre-wrap; }
+.user { color:#ff4444; }
+.bot { color:#aa0000; }
+#input-box {
+  margin-top:10px;
+  display:flex;
+  width:600px;
+}
+#user-input {
+  flex:1;
+  background:#0d0d0d;
+  color:white;
+  border:1px solid #550000;
+  border-radius:5px;
+  padding:8px;
+}
 </style>
 </head>
 <body>
 
-<h1>ROOM404 // Chat</h1>
-<div id="chat-box"></div>
-<div id="input-box">
-  <input type="text" id="user-input" placeholder="> enter your message...">
-  <button onclick="sendMessage()">send</button>
+<div id="intro">
+  <h1>⚠️ ACCESS RESTRICTED ⚠️</h1>
+  <p>
+    You are entering a corrupted neural terminal.<br>
+    By continuing, you consent to:<br>
+    – Data instability<br>
+    – Audio distortion<br>
+    – Psychological degradation<br><br>
+    Proceed at your own risk.
+  </p>
+  <button id="start">CONTINUE</button>
+</div>
+
+<div id="chat" class="hidden">
+  <h1>ROOM404 // Chat</h1>
+  <div id="chat-box"></div>
+  <div id="input-box">
+    <input type="text" id="user-input" placeholder="> enter your message...">
+    <button onclick="sendMessage()">send</button>
+  </div>
 </div>
 
 <audio id="ambient" src="sounds/ambient.mp3" loop></audio>
@@ -67,57 +91,57 @@ button:hover { background: #ff0000; }
 <audio id="glitch2" src="sounds/glitch2.mp3"></audio>
 
 <script>
-const chatBox = document.getElementById('chat-box');
-const ambient = document.getElementById('ambient');
-const glitch1 = document.getElementById('glitch1');
-const glitch2 = document.getElementById('glitch2');
+const startBtn=document.getElementById('start');
+const intro=document.getElementById('intro');
+const chat=document.getElementById('chat');
+const ambient=document.getElementById('ambient');
+const glitch1=document.getElementById('glitch1');
+const glitch2=document.getElementById('glitch2');
+const chatBox=document.getElementById('chat-box');
 
-window.onload = () => {
-  ambient.volume = 0.3;
-  ambient.play().catch(() => {
-    alert("Press OK to enable sound.");
-    ambient.play();
-  });
-  appendMessage('bot', "…initializing corrupted link…");
-  setTimeout(()=>appendMessage('bot',"connection unstable..."),1500);
+startBtn.onclick=async()=>{
+  intro.classList.add('hidden');
+  chat.classList.remove('hidden');
+  ambient.volume=0.35;
+  try { await ambient.play(); } catch(e){ console.log("Audio blocked"); }
+  appendMessage('bot',"…initializing corrupted link…");
+  setTimeout(()=>appendMessage('bot',"connection unstable..."),1200);
 };
 
-function appendMessage(sender, text) {
-  const msg = document.createElement('div');
-  msg.classList.add('message', sender);
-  msg.textContent = (sender === 'user' ? '> ' : '404: ') + text;
+function appendMessage(sender,text){
+  const msg=document.createElement('div');
+  msg.classList.add('message',sender);
+  msg.textContent=(sender==='user'?'> ':'404: ')+text;
   chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTop=chatBox.scrollHeight;
 }
 
-function sendMessage() {
-  const input = document.getElementById('user-input');
-  const text = input.value.trim();
-  if (!text) return;
-  appendMessage('user', text);
-  input.value = '';
+function playGlitch(){
+  const s=Math.random()<0.5?glitch1:glitch2;
+  s.currentTime=0;
+  s.play().catch(()=>{});
+}
+
+function sendMessage(){
+  const input=document.getElementById('user-input');
+  const t=input.value.trim();
+  if(!t)return;
+  appendMessage('user',t);
+  input.value='';
   playGlitch();
-  setTimeout(() => {
-    const responses = [
-      "It’s listening.",
-      "You shouldn’t have typed that.",
-      "I remember your voice.",
-      "Don’t move.",
-      "The noise grows louder."
-    ];
-    const reply = responses[Math.floor(Math.random() * responses.length)];
-    appendMessage('bot', reply);
-  }, 600);
-}
-
-function playGlitch() {
-  const sound = Math.random() < 0.5 ? glitch1 : glitch2;
-  sound.currentTime = 0;
-  sound.play().catch(()=>{});
+  const responses=[
+    "You shouldn’t have come here.",
+    "It’s watching through your screen.",
+    "The data remembers you.",
+    "Silence would’ve been safer.",
+    "Don’t move. It can hear keys."
+  ];
+  setTimeout(()=>appendMessage('bot',responses[Math.floor(Math.random()*responses.length)]),700);
 }
 </script>
 </body>
 </html>
+
 
 
 
