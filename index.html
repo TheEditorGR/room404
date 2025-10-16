@@ -64,6 +64,85 @@
     #panel{width:calc(100% - 40px);height:60vh}
     #q{font-size:18px}
   }
+
+  /* transcript + omega glitch overlay */
+  #transcriptOverlay{
+    position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+    background:radial-gradient(circle at center,rgba(0,0,0,0.95) 0%,rgba(3,0,0,0.98) 60%,#000 100%);
+    overflow:hidden;color:#ffdfdf;text-transform:none;pointer-events:none;
+  }
+  #transcriptOverlay.active{display:flex;animation:overlayPulse 260ms steps(2) 10 alternate;}
+  @keyframes overlayPulse{0%{filter:contrast(1.1) saturate(1)}100%{filter:contrast(1.6) saturate(1.5)}}
+  #transcriptOverlay .mega-noise{
+    position:absolute;inset:-40px;
+    background:
+      repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0,rgba(255,0,0,0.08) 2px,transparent 2px,transparent 6px),
+      repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 4px,transparent 4px,transparent 12px);
+    mix-blend-mode:screen;
+    animation:noiseDrift 120ms steps(2) infinite;
+    opacity:0.7;
+  }
+  @keyframes noiseDrift{0%{transform:translate(0,0)}50%{transform:translate(-12px,6px)}100%{transform:translate(8px,-4px)}}
+  .transcript-panel{
+    position:relative;z-index:210;width:960px;max-width:calc(100% - 60px);pointer-events:auto;
+    border:1px solid rgba(255,0,0,0.22);background:rgba(4,0,0,0.92);box-shadow:0 0 120px rgba(255,0,0,0.25);
+    padding:32px 34px;display:flex;flex-direction:column;gap:18px;font-size:15px;
+    transform:skewX(-1deg) scale(1.01);
+  }
+  .transcript-panel::before{
+    content:"";position:absolute;inset:-12px;border:1px solid rgba(255,0,0,0.14);
+    filter:blur(0.5px);pointer-events:none;animation:panelGlitch 240ms steps(2) infinite;
+  }
+  @keyframes panelGlitch{0%{clip-path:inset(0 0 0 0);}33%{clip-path:inset(10% 0 22% 0);}66%{clip-path:inset(0 0 16% 0);}100%{clip-path:inset(0 0 0 0);}}
+  .transcript-header{
+    font-size:17px;letter-spacing:3px;color:#ffbebe;display:flex;flex-direction:column;gap:6px;
+  }
+  .transcript-header span{font-size:12px;color:#ff8a8a;letter-spacing:4px;}
+  #transcriptBody{
+    max-height:340px;overflow-y:auto;border:1px solid rgba(255,0,0,0.18);
+    padding:18px;background:rgba(14,0,0,0.65);box-shadow:inset 0 0 30px rgba(255,0,0,0.12);
+    scroll-behavior:smooth;position:relative;
+  }
+  .transcript-entry{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid rgba(255,0,0,0.08);display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start;}
+  .transcript-entry:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .transcript-tag{font-size:13px;letter-spacing:2px;color:#ff7575;text-transform:uppercase;}
+  .transcript-text{display:flex;flex-direction:column;gap:6px;line-height:1.5;color:#ffdcdc;}
+  .transcript-text .speaker{font-size:12px;letter-spacing:3px;color:#ff9494;}
+  .transcript-text .content{font-size:16px;color:#fff;border-left:2px solid rgba(255,0,0,0.3);padding-left:10px;text-shadow:0 0 8px rgba(255,0,0,0.35);}
+  .transcript-text .reply{font-size:15px;color:#fffcfc;border-left:2px solid rgba(255,255,255,0.2);padding-left:10px;text-shadow:0 0 12px rgba(255,0,0,0.45);}
+  #transcriptFooter{
+    font-size:13px;letter-spacing:4px;color:#ffb5b5;text-align:center;text-transform:uppercase;
+  }
+  #finalNotice{
+    font-size:22px;letter-spacing:6px;color:#ffe5e5;text-align:center;margin-top:12px;
+    opacity:0;transform:translateY(18px);transition:opacity 0.4s ease,transform 0.4s ease;line-height:1.8;text-shadow:0 0 18px rgba(255,0,0,0.55);
+  }
+  #finalNotice.revealed{opacity:1;transform:translateY(0);}
+  body.omega-glitch{
+    animation:omegaPulse 140ms steps(3) 22;filter:contrast(1.8) saturate(1.8) hue-rotate(-25deg);
+  }
+  @keyframes omegaPulse{0%{transform:scale(1);}50%{transform:scale(1.02);}100%{transform:scale(0.99);}}
+  body.omega-glitch::before,body.omega-glitch::after{
+    content:"";position:fixed;inset:-40px;background:repeating-linear-gradient(90deg,rgba(255,0,0,0.12) 0,rgba(255,0,0,0.12) 6px,transparent 6px,transparent 12px);
+    mix-blend-mode:screen;pointer-events:none;animation:omegaTear 80ms steps(2) infinite;z-index:500;opacity:0.7;
+  }
+  body.omega-glitch::after{animation-duration:110ms;mix-blend-mode:color-dodge;opacity:0.55;filter:blur(2px);}
+  @keyframes omegaTear{0%{transform:translate(0,0);}50%{transform:translate(-18px,8px);}100%{transform:translate(10px,-6px);}}
+  #screen.omega-shake{animation:hyperShake 90ms steps(2) 18;}
+  @keyframes hyperShake{0%{transform:translate(0,0);}50%{transform:translate(-12px,8px);}100%{transform:translate(14px,-6px);}}
+  .overlay-glow{
+    position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,rgba(255,0,0,0.25) 0,transparent 60%);
+    animation:glowPulse 3s ease-in-out infinite;
+  }
+  @keyframes glowPulse{0%{opacity:0.45;}50%{opacity:0.85;}100%{opacity:0.45;}}
+
+  @media(max-width:720px){
+    .transcript-panel{padding:24px 18px;gap:12px;}
+    .transcript-entry{grid-template-columns:1fr;}
+    .transcript-tag{text-align:left;}
+    #transcriptBody{max-height:50vh;}
+    #finalNotice{font-size:18px;letter-spacing:4px;}
+  }
 </style>
 </head>
 <body>
@@ -106,10 +185,25 @@
   <audio id="a_ambient" src="ambient.mp3" loop preload="auto"></audio>
   <audio id="a_glitch1" src="glitch1.mp3" preload="auto"></audio>
   <audio id="a_glitch2" src="glitch2.mp3" preload="auto"></audio>
+  <audio id="a_glitch3" src="glitch3.mp3" preload="auto"></audio>
 
   <div class="glitch-screen" id="gScreen" aria-hidden="true">
     <div class="scan-glitch" id="sg1"></div>
     <div class="scan-glitch" id="sg2" style="animation-delay:35ms"></div>
+  </div>
+
+  <div id="transcriptOverlay" aria-hidden="true">
+    <div class="mega-noise"></div>
+    <div class="overlay-glow"></div>
+    <div class="transcript-panel">
+      <div class="transcript-header">
+        ROOM404 ARCHIVE // NEURAL DIALOGUE LEDGER
+        <span>Specimen exchange log — scroll to acknowledge completion</span>
+      </div>
+      <div id="transcriptBody"></div>
+      <div id="transcriptFooter">SCROLL THROUGH THE LOG TO CONFIRM RETENTION.</div>
+      <div id="finalNotice">TOTAL ARCHIVAL NOTICE: ALL RESPONSES HAVE BEEN RECORDED. ROOM404 FORMALLY THANKS YOU FOR OFFERING YOUR BIO-NEURAL SIGNATURE AS OUR LIVING SPECIMEN.</div>
+    </div>
   </div>
 
 <script>
@@ -151,10 +245,19 @@ const noBtn = document.getElementById('noBtn');
 const gScreen = document.getElementById('gScreen');
 const sg1 = document.getElementById('sg1');
 const sg2 = document.getElementById('sg2');
+const transcriptOverlay = document.getElementById('transcriptOverlay');
+const transcriptBody = document.getElementById('transcriptBody');
+const transcriptFooter = document.getElementById('transcriptFooter');
+const finalNotice = document.getElementById('finalNotice');
 
 const audioAmbient = document.getElementById('a_ambient');
 const audioGlitch1 = document.getElementById('a_glitch1');
 const audioGlitch2 = document.getElementById('a_glitch2');
+const audioGlitch3 = document.getElementById('a_glitch3');
+
+let transcriptLog = [];
+let overlayScrollTriggered = false;
+let finalSequenceTriggered = false;
 
 /* ====== WebAudio fallback generator (if files missing or blocked) ====== */
 let audioCtx = null;
@@ -250,15 +353,18 @@ btnDecline.addEventListener('click', ()=> {
 /* ====== Questions flow ====== */
 function askNext(){
   if(qIndex >= QUESTIONS.length){
-    qEl.innerHTML = "<strong>TRANSMISSION ENDED.</strong><br><span class='muted'>You may close this session. The memory remains.</span>";
-    yesBtn.style.display = noBtn.style.display = 'none';
+    finalizeTransmission();
     return;
   }
   qEl.textContent = QUESTIONS[qIndex++];
 }
 
 /* sound + visual on answer */
-function handleAnswer(){
+function handleAnswer(choice){
+  const currentQuestion = QUESTIONS[qIndex-1] || qEl.textContent;
+  if(currentQuestion){
+    transcriptLog.push({question: currentQuestion, answer: choice});
+  }
   // visual micro-glitch
   bigGlitchVisual(false);
   // play answer glitch
@@ -272,8 +378,68 @@ function handleAnswer(){
   setTimeout(()=>{ askNext(); }, 750);
 }
 
-yesBtn.addEventListener('click', handleAnswer);
-noBtn.addEventListener('click', handleAnswer);
+yesBtn.addEventListener('click', ()=>handleAnswer('YES'));
+noBtn.addEventListener('click', ()=>handleAnswer('NO'));
+
+function finalizeTransmission(){
+  if(finalSequenceTriggered) return;
+  finalSequenceTriggered = true;
+  yesBtn.style.display = noBtn.style.display = 'none';
+  qEl.innerHTML = "<strong>TRANSMISSION SEALED.</strong><br><span class='muted'>Archival echo executing... hold position.</span>";
+  megaGlitchRitual();
+  playSound(audioGlitch3, 1.0);
+  setTimeout(()=>{
+    renderTranscript();
+  }, 900);
+}
+
+function megaGlitchRitual(){
+  document.body.classList.add('omega-glitch');
+  screen.classList.add('omega-shake');
+  gScreen.style.display='block';
+  sg1.style.opacity = 1;
+  sg2.style.opacity = 0.85;
+  setTimeout(()=>{ screen.classList.remove('omega-shake'); }, 1800);
+  setTimeout(()=>{ document.body.classList.remove('omega-glitch'); }, 6200);
+}
+
+function renderTranscript(){
+  transcriptOverlay.classList.add('active');
+  transcriptOverlay.setAttribute('aria-hidden','false');
+  transcriptBody.innerHTML = '';
+  overlayScrollTriggered = false;
+  transcriptBody.scrollTop = 0;
+  transcriptFooter.textContent = 'SCROLL THROUGH THE LOG TO CONFIRM RETENTION.';
+  finalNotice.classList.remove('revealed');
+  transcriptLog.forEach((entry, idx)=>{
+    const wrapper = document.createElement('div');
+    wrapper.className = 'transcript-entry';
+    const tag = document.createElement('div');
+    tag.className = 'transcript-tag';
+    tag.textContent = `EXCHANGE ${String(idx+1).padStart(2,'0')}`;
+    const text = document.createElement('div');
+    text.className = 'transcript-text';
+    const qSpeaker = document.createElement('div');
+    qSpeaker.className = 'speaker';
+    qSpeaker.textContent = 'ROOM404 // QUERY';
+    const qContent = document.createElement('div');
+    qContent.className = 'content';
+    qContent.textContent = entry.question;
+    const aSpeaker = document.createElement('div');
+    aSpeaker.className = 'speaker';
+    aSpeaker.textContent = 'SPECIMEN // RESPONSE';
+    const aContent = document.createElement('div');
+    aContent.className = 'reply';
+    aContent.textContent = entry.answer;
+    text.appendChild(qSpeaker);
+    text.appendChild(qContent);
+    text.appendChild(aSpeaker);
+    text.appendChild(aContent);
+    wrapper.appendChild(tag);
+    wrapper.appendChild(text);
+    transcriptBody.appendChild(wrapper);
+  });
+}
 
 /* ====== safety: ensure ambient keeps running when page regains focus ====== */
 window.addEventListener('focus', ()=> {
@@ -282,10 +448,22 @@ window.addEventListener('focus', ()=> {
   }
 });
 
+transcriptBody.addEventListener('scroll', ()=>{
+  if(overlayScrollTriggered) return;
+  const bottom = Math.ceil(transcriptBody.scrollTop + transcriptBody.clientHeight) >= transcriptBody.scrollHeight;
+  if(bottom){
+    overlayScrollTriggered = true;
+    playSound(audioGlitch1, 1.0);
+    bigGlitchVisual(true);
+    transcriptFooter.textContent = 'ARCHIVE VALIDATED // SIGNAL IMMUTABLE.';
+    finalNotice.classList.add('revealed');
+  }
+});
+
 /* ====== preload attempt for quick startup ====== */
 window.addEventListener('load', ()=> {
   // try quick load of audio resources
-  [audioAmbient,audioGlitch1,audioGlitch2].forEach(a=>{ try{ a.load(); }catch(e){} });
+  [audioAmbient,audioGlitch1,audioGlitch2,audioGlitch3].forEach(a=>{ try{ a.load(); }catch(e){} });
   // hide glitch screen initially
   gScreen.style.display='none'; sg1.style.opacity=0; sg2.style.opacity=0;
 });
