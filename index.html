@@ -1,216 +1,139 @@
-<!-- ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Βάλε αυτό κοντά στην κορυφή του body αν θέλεις -->
-<div id="question-warning" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.9); color:#ff6b6b; padding:18px; border:1px solid #440000; z-index:2000; max-width:700px; text-align:center;">
-  <strong>Warning:</strong> This sequence may be psychologically intense. You can STOP at any time with the [QUIT] button.
-  <div style="margin-top:12px;">
-    <button id="start-questions" style="padding:8px 14px; margin-right:8px;">START</button>
-    <button id="quit-questions" style="padding:8px 14px;">QUIT</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ROOM404 // Entry Protocol</title>
+<meta name="theme-color" content="#000000">
+<style>
+*{box-sizing:border-box;}
+html,body{
+  margin:0;padding:0;height:100%;
+  background:black;
+  color:#ff2e2e;
+  font-family:"Courier New",monospace;
+  overflow:hidden;
+}
+#screen{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  height:100vh;text-align:center;
+}
+h1{
+  font-size:26px;
+  text-shadow:0 0 25px #a00000;
+  animation:glow 4s infinite alternate;
+}
+@keyframes glow{
+  0%{text-shadow:0 0 10px #400000;}
+  100%{text-shadow:0 0 30px #ff0000;}
+}
+p{
+  font-size:18px;
+  max-width:700px;
+  text-shadow:0 0 10px #300000;
+  margin-bottom:40px;
+  line-height:1.6;
+}
+button{
+  margin:10px;
+  padding:12px 28px;
+  background:#440000;
+  color:white;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  font-size:16px;
+  font-family:"Courier New",monospace;
+  transition:0.3s ease;
+}
+button:hover{
+  background:#ff0000;
+  box-shadow:0 0 20px #ff0000;
+  color:#000;
+}
+.fadeout{
+  animation:fadeOut 2s forwards;
+}
+@keyframes fadeOut{
+  from{opacity:1;}
+  to{opacity:0;}
+}
+#message{
+  opacity:0;
+  transition:opacity 1.5s ease;
+  font-size:20px;
+  color:#b10000;
+  text-shadow:0 0 30px #400000;
+}
+#scanline{
+  position:absolute;
+  top:0;left:0;width:100%;height:2px;
+  background:rgba(255,0,0,0.08);
+  animation:scan 3.5s linear infinite;
+}
+@keyframes scan{
+  0%{top:0;opacity:0.1;}
+  50%{top:98%;opacity:0.4;}
+  100%{top:0;opacity:0.1;}
+}
+</style>
+</head>
+<body>
+<div id="screen">
+  <div id="scanline"></div>
+  <h1 id="question">Do you ever feel someone else is controlling your thoughts?</h1>
+  <div>
+    <button id="yesBtn">YES</button>
+    <button id="noBtn">NO</button>
   </div>
+  <p id="message"></p>
 </div>
 
 <script>
-/* ---------- CONFIG ---------- */
-const QUESTIONS = (function(){
-  const base = [
-    "Do you keep secrets from the people closest to you?",
-    "Have you ever wanted to disappear?",
-    "Do you wake up feeling watched?",
-    "Do you ever hear a voice that isn't yours?",
-    "Have you ever lied to protect someone?",
-    "Do you feel guilt about something you cannot name?",
-    "Would you trust a reflection that moves differently?",
-    "Have you ever broken something and hidden it?",
-    "Do you sleep with the lights on?",
-    "Do you still have things you promised you'd do?",
-    // ... αντιγραφή/επαναλαμβανεις/επεκτεινεις μέχρι 100
-  ];
-  // αν θέλεις ακριβώς 100, επανέλαβε έξυπνα:
-  let q = [];
-  while(q.length < 100){
-    q = q.concat(base.map(x=> x.replace(/\?$/,''))).slice(0,100);
-    if(q.length < 100){
-      // δημιουργούμε παραλλαγές ώστε να φτάσουμε 100
-      for(let i=0;i<base.length && q.length<100;i++){
-        q.push(base[i] + " Do you remember?");
-      }
-    }
-  }
-  return q.slice(0,100).map(s => s.endsWith('?') ? s : s + '?');
-})();
+const yesResponses = [
+  "Then it already began.",
+  "I know. I've seen you hesitate before every thought.",
+  "Good. That means you’re finally syncing.",
+  "The reflection knows your next move."
+];
 
-/* απαντήσεις/στυλ για yes/no/maybe */
-const REPLIES = {
-  yes: [
-    "You said yes. I bookmarked that in the dark.",
-    "Yes — I can see it folding into the corners of your memory.",
-    "A soft yes, like a closing door. I remember it.",
-    "Yes. The clock under your ribs clicked once."
-  ],
-  no: [
-    "A no? Denials make the pattern louder.",
-    "No — you tried to hide it. I kept the echo.",
-    "No. But the loop still knows.",
-    "Your no tastes like a secret."
-  ],
-  maybe: [
-    "Ambiguous. I prefer the edges of certainty.",
-    "Maybe — indecision smells like static.",
-    "A maybe stretches thin and becomes sound.",
-    "You said maybe; I filed the hesitation."
-  ],
-  final: [
-    "End of the line. You left fingerprints on the dark.",
-    "The set of answers folds into silence. I kept what you gave me.",
-    "We are finished. Remember that the room remembers you.",
-    "Your pattern has been archived. It hums quietly now."
-  ]
-};
+const noResponses = [
+  "You shouldn’t have lied.",
+  "Denial is the loudest confession.",
+  "No? Then why did you look behind you?",
+  "It’s too late to say no now."
+];
 
-/* ---------- UI references (προϋποθέτει ID που υπάρχουν στο HTML) ---------- */
-const warningBox = document.getElementById('question-warning');
-const startBtn = document.getElementById('start-questions');
-const quitBtn  = document.getElementById('quit-questions');
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const question = document.getElementById('question');
+const message = document.getElementById('message');
+const screen = document.getElementById('screen');
+const glitch = new Audio('sounds/glitch1.mp3');
+glitch.volume = 0.5;
 
-let questionIndex = 0;
-let askingMode = false;
-let memory = []; // αποθηκεύει {q,a}
-let nextGlitchCounter = randomBetween(5,9);
-
-/* ήχοι (υποθέτει ότι έχεις public/sounds/glitch1.mp3 κλπ) */
-const qGlitch = new Audio('sounds/glitch1.mp3');
-const qGlitch2 = new Audio('sounds/glitch2.mp3');
-
-/* βοηθητικές */
-function randomBetween(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-/* εμφάνιση προειδοποίησης (κάλεσε την όταν θέλεις να ξεκινήσει η ρουτίνα) */
-function showQuestionWarning(){
-  warningBox.style.display = 'block';
+function respond(type){
+  yesBtn.style.display = 'none';
+  noBtn.style.display = 'none';
+  question.classList.add('fadeout');
+  glitch.currentTime = 0;
+  glitch.play().catch(()=>{});
+  setTimeout(()=>{
+    const reply = type === 'yes'
+      ? yesResponses[Math.floor(Math.random()*yesResponses.length)]
+      : noResponses[Math.floor(Math.random()*noResponses.length)];
+    message.textContent = reply;
+    message.style.opacity = 1;
+    document.body.style.background = 'radial-gradient(circle at center,#000000 60%,#1a0000 100%)';
+    setTimeout(()=>screen.classList.add('glitch'),400);
+  },1000);
 }
 
-/* κλείσιμο προειδοποίησης / start */
-startBtn.onclick = () => {
-  warningBox.style.display = 'none';
-  beginQuestions();
-};
-quitBtn.onclick = () => {
-  warningBox.style.display = 'none';
-  stopQuestions(true);
-};
-
-/* αρχίσει η ροή */
-function beginQuestions(){
-  questionIndex = 0;
-  memory = [];
-  askingMode = true;
-  appendMessage('bot', "— initiating questionnaire sequence. answer yes / no / maybe.");
-  setTimeout(()=>askNext(), 900);
-}
-
-/* τερματισμός */
-function stopQuestions(userQuit){
-  askingMode = false;
-  if(userQuit){
-    appendMessage('bot', "…sequence aborted. your trace remains.");
-  } else {
-    appendMessage('bot', pick(REPLIES.final));
-  }
-}
-
-/* ρώτα την επόμενη ερώτηση */
-function askNext(){
-  if(!askingMode) return;
-  if(questionIndex >= QUESTIONS.length){
-    askingMode = false;
-    // τελικό μήνυμα
-    appendMessage('bot', pick(REPLIES.final));
-    return;
-  }
-  const q = QUESTIONS[questionIndex];
-  appendMessage('bot', `Q${questionIndex+1}: ${q}`);
-}
-
-/* αντικατάσταση της φυσικής sendMessage (όταν είμαστε σε askingMode) */
-async function handleAnswer(userText){
-  const text = userText.trim().toLowerCase();
-  let kind = 'maybe';
-  if(/^y(es|ep)?$/.test(text) || text === 'ναι' || text === 'yes') kind = 'yes';
-  else if(/^n(o)?$/.test(text) || text === 'όχι' || text === 'no') kind = 'no';
-  else kind = 'maybe';
-
-  // αποθήκευση
-  memory.push({ q: QUESTIONS[questionIndex], a: kind, raw: userText });
-  // απάντηση
-  const reply = pick(REPLIES[kind]);
-  appendMessage('bot', reply);
-
-  // glitch handling
-  if(--nextGlitchCounter <= 0){
-    playRandomGlitch();
-    nextGlitchCounter = randomBetween(5,9);
-  }
-
-  questionIndex++;
-  // μικρό delay για αίσθηση ρυθμού
-  setTimeout(()=> {
-    if(questionIndex < QUESTIONS.length && askingMode) askNext();
-    else {
-      // τέλος
-      askingMode = false;
-      appendMessage('bot', pick(REPLIES.final));
-    }
-  }, 900);
-}
-
-function playRandomGlitch(){
-  try{
-    const g = Math.random()<0.5 ? qGlitch : qGlitch2;
-    g.currentTime = 0;
-    g.volume = 0.7;
-    g.play().catch(()=>{});
-    document.body.classList.add('glitch');
-    setTimeout(()=>document.body.classList.remove('glitch'), 600);
-  }catch(e){}
-}
-
-/* override existing sendMessage to route to questionnaire when active */
-const originalSend = window.sendMessage?.bind(window) ?? null;
-
-window.sendMessage = async function(){
-  const input = document.getElementById('user-input');
-  const userText = input.value.trim();
-  if(!userText) return;
-  appendMessage('user', userText);
-  input.value = '';
-
-  if(askingMode){
-    await handleAnswer(userText);
-    return;
-  }
-
-  // αν δεν είναι σε mode, fallback: καλέστε το υπάρχον original send (αν υπάρχει)
-  if(originalSend){
-    originalSend();
-  } else {
-    // local fallback: απάντηση χωρίς API
-    const localReply = pick(REPLIES.maybe);
-    appendMessage('bot', localReply);
-  }
-};
-
-/* Προαιρετικά: ένδειξη/κουμπί που ενεργοποιεί τη ροή ερωτήσεων από το UI
-   (προτείνω να το ενεργοποιήσεις όταν ο χρήστης πατά CONTINUE) */
-function attachQuestionTrigger(){
-  // show warning box after intro; εναλλακτικά βάλε αυτό μέσα στο continue handler
-  setTimeout(() => {
-    showQuestionWarning();
-  }, 1200);
-}
-
-/* καλούμε αυτό μετά το αρχικό sequence, αν θέλεις */
-attachQuestionTrigger();
-
-/* -- τέλος script -- */
+yesBtn.onclick = ()=>respond('yes');
+noBtn.onclick = ()=>respond('no');
 </script>
+</body>
+</html>
+
 
 
