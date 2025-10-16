@@ -134,30 +134,36 @@ button:hover{background:#aa0000;box-shadow:0 0 15px #660000;}
 
   <div id="declined">SIGNAL LOST.</div>
 
-  <audio id="ambient" src="sound/ambient.mp3" loop></audio>
-  <audio id="glitch1" src="sound/glitch1.mp3"></audio>
-  <audio id="glitch2" src="sound/glitch2.mp3"></audio>
-
 <script>
 const intro=document.getElementById('intro');
 const container=document.getElementById('container');
 const declined=document.getElementById('declined');
 const chatBox=document.getElementById('chat-box');
-const ambient=document.getElementById('ambient');
 const memory=[];
 let messageCount=0;
 let nextGlitch=Math.floor(Math.random()*4)+4;
 
-document.getElementById('continue').onclick=()=>{
-  const g=document.getElementById('glitch1');
-  g.currentTime=0; g.play().catch(()=>{});
-  intro.style.animation="glitchAnim 0.3s infinite";
-  setTimeout(()=>{
-    intro.style.display='none';
-    container.style.display='flex';
-    ambient.volume=0.3; ambient.play().catch(()=>{});
+const ambient=new Audio('sound/ambient.mp3');
+const glitch1=new Audio('sound/glitch1.mp3');
+const glitch2=new Audio('sound/glitch2.mp3');
+ambient.loop=true;
+ambient.volume=0.3;
+
+document.getElementById('continue').onclick=async()=>{
+  try {
+    intro.style.animation="glitchAnim 0.3s infinite";
+    glitch1.currentTime=0;
+    await glitch1.play();
+    setTimeout(()=>{
+      intro.style.display='none';
+      container.style.display='flex';
+    },1200);
+    await ambient.play(); // ξεκινάει σωστά σε όλους τους browsers
     startSequence();
-  },1200);
+    setInterval(()=>{glitch2.currentTime=0;glitch2.play();},15000);
+  } catch(err){
+    console.warn("⚠️ Audio playback blocked until click:", err);
+  }
 };
 
 document.getElementById('decline').onclick=()=>{
@@ -179,8 +185,7 @@ function appendMessage(sender,text){
 function glitchScreen(){
   document.body.classList.add('glitch');
   chatBox.classList.add('glitch');
-  const g2=document.getElementById('glitch2');
-  g2.currentTime=0; g2.play().catch(()=>{});
+  glitch2.currentTime=0; glitch2.play().catch(()=>{});
   setTimeout(()=>{
     document.body.classList.remove('glitch');
     chatBox.classList.remove('glitch');
@@ -196,7 +201,7 @@ function getCreepyResponse(userText){
   if(lower.includes("name")) return "Names dissolve here.";
   if(lower.includes("time")) return "Time doesn’t flow here. It loops.";
   if(lower.includes("stop")) return "You can’t stop what you started.";
-  if(lower.includes("exit") || lower.includes("leave")) return "There is no exit. Only recursion.";
+  if(lower.includes("exit")||lower.includes("leave")) return "There is no exit. Only recursion.";
   if(Math.random()<0.25 && memory.length>0){
     const old=memory[Math.floor(Math.random()*memory.length)];
     return `"${old}"... you said that before. Do you remember?`;
