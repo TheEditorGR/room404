@@ -135,83 +135,78 @@ button:hover{background:#aa0000;box-shadow:0 0 15px #660000;}
   <div id="declined">SIGNAL LOST.</div>
 
 <script>
-const intro = document.getElementById('intro');
-const container = document.getElementById('container');
-const declined = document.getElementById('declined');
-const chatBox = document.getElementById('chat-box');
-const ambient = document.getElementById('ambient');
-const glitch1 = document.getElementById('glitch1');
-const glitch2 = document.getElementById('glitch2');
-const memory = [];
-let messageCount = 0;
-let nextGlitch = Math.floor(Math.random() * 4) + 4;
+const intro=document.getElementById('intro');
+const container=document.getElementById('container');
+const declined=document.getElementById('declined');
+const chatBox=document.getElementById('chat-box');
+const memory=[];
+let messageCount=0;
+let nextGlitch=Math.floor(Math.random()*4)+4;
 
-document.getElementById('continue').addEventListener('click', async () => {
+const ambient=new Audio('ambient.mp3');
+const glitch1=new Audio('glitch1.mp3');
+const glitch2=new Audio('glitch2.mp3');
+ambient.loop=true;
+ambient.volume=0.3;
+
+document.getElementById('continue').onclick=async()=>{
   try {
-    // First click = clear gesture context
-    intro.style.animation = "glitchAnim 0.3s infinite";
+    intro.style.animation="glitchAnim 0.3s infinite";
+    glitch1.currentTime=0;
     await glitch1.play();
-    setTimeout(async () => {
-      intro.style.display = 'none';
-      container.style.display = 'flex';
-      ambient.volume = 0.3;
-      try {
-        await ambient.play();
-      } catch (e) {
-        console.log("Autoplay blocked, waiting for user action to start ambient.");
-      }
-      startSequence();
-    }, 1200);
-  } catch (e) {
-    console.warn("Audio play blocked, proceeding anyway:", e);
-    intro.style.display = 'none';
-    container.style.display = 'flex';
+    setTimeout(()=>{
+      intro.style.display='none';
+      container.style.display='flex';
+    },1200);
+    await ambient.play();
     startSequence();
+    setInterval(()=>{glitch2.currentTime=0;glitch2.play();},15000);
+  } catch(err){
+    console.warn("⚠️ Audio playback blocked until click:", err);
   }
-});
+};
 
-document.getElementById('decline').addEventListener('click', () => {
-  intro.style.display = 'none';
-  declined.style.display = 'flex';
-});
+document.getElementById('decline').onclick=()=>{
+  intro.style.display='none';
+  declined.style.display='flex';
+};
 
-function appendMessage(sender, text) {
-  const msg = document.createElement('div');
-  msg.classList.add('message', sender);
-  if (sender === 'bot') {
-    text = text.split('').map(c => Math.random() < 0.03 ? String.fromCharCode(33 + Math.random() * 94) : c).join('');
+function appendMessage(sender,text){
+  const msg=document.createElement('div');
+  msg.classList.add('message',sender);
+  if(sender==='bot'){
+    text=text.split('').map(c=>Math.random()<0.03?String.fromCharCode(33+Math.random()*94):c).join('');
   }
-  msg.innerHTML = (sender === 'user' ? '> ' : '') + text;
+  msg.innerHTML=(sender==='user'?'> ':'')+text;
   chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTop=chatBox.scrollHeight;
 }
 
-function glitchScreen() {
+function glitchScreen(){
   document.body.classList.add('glitch');
   chatBox.classList.add('glitch');
-  glitch2.currentTime = 0;
-  glitch2.play().catch(()=>{});
-  setTimeout(() => {
+  glitch2.currentTime=0; glitch2.play().catch(()=>{});
+  setTimeout(()=>{
     document.body.classList.remove('glitch');
     chatBox.classList.remove('glitch');
-  }, 600);
+  },600);
 }
 
-function getCreepyResponse(userText) {
-  const lower = userText.toLowerCase();
-  if (lower.includes("who")) return "I am the space between your thoughts.";
-  if (lower.includes("why")) return "Because silence needed a shape.";
-  if (lower.includes("help")) return "Help is irrelevant now.";
-  if (lower.includes("where")) return "You're inside what used to be safe.";
-  if (lower.includes("name")) return "Names dissolve here.";
-  if (lower.includes("time")) return "Time doesn’t flow here. It loops.";
-  if (lower.includes("stop")) return "You can’t stop what you started.";
-  if (lower.includes("exit") || lower.includes("leave")) return "There is no exit. Only recursion.";
-  if (Math.random() < 0.25 && memory.length > 0) {
-    const old = memory[Math.floor(Math.random() * memory.length)];
+function getCreepyResponse(userText){
+  const lower=userText.toLowerCase();
+  if(lower.includes("who")) return "I am the space between your thoughts.";
+  if(lower.includes("why")) return "Because silence needed a shape.";
+  if(lower.includes("help")) return "Help is irrelevant now.";
+  if(lower.includes("where")) return "You're inside what used to be safe.";
+  if(lower.includes("name")) return "Names dissolve here.";
+  if(lower.includes("time")) return "Time doesn’t flow here. It loops.";
+  if(lower.includes("stop")) return "You can’t stop what you started.";
+  if(lower.includes("exit")||lower.includes("leave")) return "There is no exit. Only recursion.";
+  if(Math.random()<0.25 && memory.length>0){
+    const old=memory[Math.floor(Math.random()*memory.length)];
     return `"${old}"... you said that before. Do you remember?`;
   }
-  const replies = [
+  const replies=[
     "signal distortion detected.",
     "your words feel warm.",
     "data pulse increasing.",
@@ -223,30 +218,33 @@ function getCreepyResponse(userText) {
     "can you see the static too?",
     "it’s too late now."
   ];
-  return replies[Math.floor(Math.random() * replies.length)];
+  return replies[Math.floor(Math.random()*replies.length)];
 }
 
-function sendMessage() {
-  const input = document.getElementById('user-input');
-  const userText = input.value.trim();
-  if (!userText) return;
-  appendMessage('user', userText);
+function sendMessage(){
+  const input=document.getElementById('user-input');
+  const userText=input.value.trim();
+  if(!userText)return;
+  appendMessage('user',userText);
   memory.push(userText);
-  if (memory.length > 15) memory.shift();
-  input.value = '';
+  if(memory.length>15)memory.shift();
+  input.value='';
   messageCount++;
-  const botReply = getCreepyResponse(userText);
-  setTimeout(() => appendMessage('bot', botReply), 800);
-  if (messageCount >= nextGlitch) {
-    setTimeout(glitchScreen, 300);
-    messageCount = 0;
-    nextGlitch = Math.floor(Math.random() * 4) + 4;
+  const botReply=getCreepyResponse(userText);
+  setTimeout(()=>appendMessage('bot',botReply),800);
+  if(messageCount>=nextGlitch){
+    setTimeout(glitchScreen,300);
+    messageCount=0;
+    nextGlitch=Math.floor(Math.random()*4)+4;
   }
 }
 
-function startSequence() {
-  appendMessage('bot', "…initializing corrupted consciousness…");
-  setTimeout(() => appendMessage('bot', "memory leak detected."), 2000);
-  setTimeout(() => appendMessage('bot', "connection unstable… proceed carefully."), 4000);
+function startSequence(){
+  appendMessage('bot',"…initializing corrupted consciousness…");
+  setTimeout(()=>appendMessage('bot',"memory leak detected."),2000);
+  setTimeout(()=>appendMessage('bot',"connection unstable… proceed carefully."),4000);
 }
 </script>
+</body>
+</html>
+
