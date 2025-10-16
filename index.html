@@ -1,176 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>ROOM404 // Initiation</title>
-<meta name="theme-color" content="#000000">
-<style>
-*{box-sizing:border-box;}
-html,body{
-  margin:0;padding:0;height:100%;
-  background:black;color:#ff1a1a;
-  font-family:"Courier New",monospace;
-  overflow:hidden;
-}
-#screen{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  height:100vh;text-align:center;
-  background:radial-gradient(circle at center,#000000 60%,#0a0000 100%);
-  transition:background 2s ease;
-}
-h1{
-  font-size:24px;
-  text-shadow:0 0 25px #a00000;
-  animation:glow 3s infinite alternate;
-}
-@keyframes glow{
-  0%{text-shadow:0 0 8px #300000;}
-  100%{text-shadow:0 0 30px #ff0000;}
-}
-p{
-  font-size:18px;
-  max-width:600px;
-  text-shadow:0 0 10px #300000;
-  margin-bottom:40px;
-  line-height:1.6;
-}
-button{
-  margin:10px;
-  padding:12px 28px;
-  background:#440000;
-  color:white;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
-  font-size:16px;
-  font-family:"Courier New",monospace;
-  transition:0.3s ease;
-}
-button:hover{
-  background:#ff0000;
-  box-shadow:0 0 20px #ff0000;
-  color:#000;
-}
-#message{
-  opacity:0;
-  transition:opacity 1.5s ease;
-  font-size:20px;
-  color:#b10000;
-  text-shadow:0 0 25px #400000;
-}
-.fadeout{
-  animation:fadeOut 1s forwards;
-}
-@keyframes fadeOut{
-  from{opacity:1;}
-  to{opacity:0;}
-}
-#scanline{
-  position:absolute;
-  top:0;left:0;width:100%;height:2px;
-  background:rgba(255,0,0,0.05);
-  animation:scan 3s linear infinite;
-}
-@keyframes scan{
-  0%{top:0;opacity:0.1;}
-  50%{top:98%;opacity:0.3;}
-  100%{top:0;opacity:0.1;}
-}
-</style>
+  <meta charset="UTF-8">
+  <title>ROOM404 — Corrupted Terminal</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: black;
+      color: #e60000;
+      font-family: "Courier New", monospace;
+      overflow: hidden;
+      transition: background 0.2s ease;
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.3));
+    }
+
+    #chat-box {
+      width: 500px;
+      height: 400px;
+      border: 1px solid #550000;
+      background: #070707;
+      padding: 15px;
+      overflow-y: auto;
+      border-radius: 8px;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .message {
+      margin: 8px 0;
+      white-space: pre-wrap;
+      transition: opacity 0.3s ease;
+    }
+
+    .user { color: #ff5555; }
+    .bot { color: #b30000; }
+
+    #input-box {
+      margin-top: 15px;
+      width: 500px;
+      display: flex;
+    }
+
+    #user-input {
+      flex: 1;
+      background: #0d0d0d;
+      color: #f5f5f5;
+      border: 1px solid #550000;
+      border-radius: 4px;
+      padding: 8px;
+      outline: none;
+    }
+
+    button {
+      background: #b30000;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 14px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff0000;
+    }
+
+    .glitch {
+      animation: glitchAnim 0.15s infinite;
+    }
+
+    @keyframes glitchAnim {
+      0% { filter: hue-rotate(0deg) contrast(1); }
+      50% { filter: hue-rotate(120deg) contrast(1.6); }
+      100% { filter: hue-rotate(0deg) contrast(1); }
+    }
+
+    .flicker {
+      animation: flickerBg 0.4s;
+    }
+
+    @keyframes flickerBg {
+      0%, 100% { background: black; }
+      40% { background: #150000; }
+      60% { background: #300000; }
+    }
+
+    .scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255,0,0,0.1);
+      animation: scan 4s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { top: 0; opacity: 0.1; }
+      50% { top: 98%; opacity: 0.3; }
+      100% { top: 0; opacity: 0.1; }
+    }
+
+  </style>
 </head>
 <body>
-<div id="screen">
-  <div id="scanline"></div>
-  <h1 id="question">Do you ever feel like something inside you isn’t you anymore?</h1>
-  <div>
-    <button id="yesBtn">YES</button>
-    <button id="noBtn">NO</button>
+  <div id="container">
+    <h1 style="color:#800000; text-shadow:0 0 20px red;">ROOM404 // corrupted terminal</h1>
+    <div id="chat-box">
+      <div class="scanline"></div>
+    </div>
+    <div id="input-box">
+      <input type="text" id="user-input" placeholder="> enter your message..." />
+      <button onclick="sendMessage()">send</button>
+    </div>
   </div>
-  <p id="message"></p>
-</div>
 
-<audio id="ambient" src="sounds/ambient.mp3" loop></audio>
-<audio id="glitch1" src="sounds/glitch1.mp3"></audio>
-<audio id="glitch2" src="sounds/glitch2.mp3"></audio>
+  <!-- audio -->
+  <audio id="glitch1" src="sounds/Glitch Sound Effect (Speaker).mp3"></audio>
+  <audio id="glitch2" src="sounds/Glitch sound effect 3.mp3"></audio>
 
-<script>
-const questions = [
-  "Do you ever feel like something inside you isn’t you anymore?",
-  "When was the last time you were truly alone?",
-  "If I asked what’s behind you right now, would you look?",
-  "Do you think your reflection watches when you sleep?",
-  "Would you give up control if it meant peace?",
-  "Have you heard your name whispered when no one’s there?",
-  "Do you believe the light in your room ever flickers for a reason?"
-];
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const memory = [];
+    let messageCount = 0;
+    let nextGlitch = Math.floor(Math.random() * 5) + 5;
 
-const yesResponses = [
-  "Then it already began.",
-  "I can feel it feeding.",
-  "You accepted it long ago.",
-  "The reflection smiles back.",
-  "Good. Don’t resist next time."
-];
-const noResponses = [
-  "You shouldn’t have lied.",
-  "Denial burns loudest in the dark.",
-  "Liar. I saw you hesitate.",
-  "That’s what they all said… before.",
-  "No one ever says no twice."
-];
+    const replies = [
+      "Connection unstable...",
+      "You shouldn't have accessed this room.",
+      "The system remembers.",
+      "What you type... stays.",
+      "There's someone else here.",
+      "Do you feel the static?",
+      "Stop typing. It's listening.",
+      "You were warned.",
+      "404 wants to speak to you.",
+      "Silence would be safer."
+    ];
 
-const question = document.getElementById('question');
-const message = document.getElementById('message');
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const ambient = document.getElementById('ambient');
-const glitch1 = document.getElementById('glitch1');
-const glitch2 = document.getElementById('glitch2');
+    function appendMessage(sender, text) {
+      const msg = document.createElement('div');
+      msg.classList.add('message', sender);
+      msg.innerText = (sender === 'user' ? '> ' : '404: ') + text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-let currentQuestion = 0;
-ambient.volume = 0.3;
+    function playGlitch() {
+      const sounds = ["glitch1", "glitch2"];
+      const id = sounds[Math.floor(Math.random() * sounds.length)];
+      const s = document.getElementById(id);
+      s.currentTime = 0;
+      s.play().catch(()=>{});
+    }
 
-window.onload = () => {
-  ambient.play().catch(() => console.warn("User interaction needed to start sound."));
-};
+    function glitchScreen() {
+      document.body.classList.add('flicker');
+      chatBox.classList.add('glitch');
+      playGlitch();
+      setTimeout(()=>{
+        document.body.classList.remove('flicker');
+        chatBox.classList.remove('glitch');
+      }, 400);
+    }
 
-function respond(answerType){
-  yesBtn.style.display = 'none';
-  noBtn.style.display = 'none';
-  question.classList.add('fadeout');
-  const glitchSound = Math.random() < 0.5 ? glitch1 : glitch2;
-  glitchSound.currentTime = 0;
-  glitchSound.play().catch(()=>{});
-  
-  setTimeout(()=>{
-    const reply = answerType === 'yes'
-      ? yesResponses[Math.floor(Math.random()*yesResponses.length)]
-      : noResponses[Math.floor(Math.random()*noResponses.length)];
-    message.textContent = reply;
-    message.style.opacity = 1;
+    function getCreepyResponse(userText) {
+      const lower = userText.toLowerCase();
+      if (lower.includes("name")) return "Names are useless here.";
+      if (lower.includes("who")) return "I’m not a who.";
+      if (lower.includes("why")) return "Because this is where data dies.";
+      if (lower.includes("where")) return "You're inside the noise.";
+      if (lower.includes("help")) return "Help doesn't come here.";
+      if (Math.random() < 0.3 && memory.length > 0) {
+        const old = memory[Math.floor(Math.random()*memory.length)];
+        return `"${old}"... you said that before.`;
+      }
+      return replies[Math.floor(Math.random()*replies.length)];
+    }
 
-    setTimeout(nextQuestion, 4000);
-  },1200);
-}
+    function sendMessage() {
+      const input = document.getElementById('user-input');
+      const userText = input.value.trim();
+      if (!userText) return;
+      appendMessage('user', userText);
+      memory.push(userText);
+      if (memory.length > 10) memory.shift();
+      input.value = '';
+      messageCount++;
 
-function nextQuestion(){
-  message.style.opacity = 0;
-  question.classList.remove('fadeout');
-  currentQuestion++;
-  if (currentQuestion >= questions.length){
-    question.textContent = "…connection lost…";
-    document.body.style.background = "black";
-    return;
-  }
-  question.textContent = questions[currentQuestion];
-  yesBtn.style.display = 'inline-block';
-  noBtn.style.display = 'inline-block';
-}
+      const botReply = getCreepyResponse(userText);
+      setTimeout(() => appendMessage('bot', botReply), 600);
 
-yesBtn.onclick = ()=>respond('yes');
-noBtn.onclick = ()=>respond('no');
-</script>
+      // trigger glitch at random intervals between 5–9 messages
+      if (messageCount >= nextGlitch) {
+        setTimeout(glitchScreen, 400);
+        messageCount = 0;
+        nextGlitch = Math.floor(Math.random() * 5) + 5;
+      }
+    }
+
+    // little ambient startup
+    window.onload = () => {
+      appendMessage('bot', "…initializing corrupted terminal…");
+      setTimeout(()=>appendMessage('bot', "connection unstable... stay quiet."), 1500);
+    };
+  </script>
 </body>
 </html>
+
 
