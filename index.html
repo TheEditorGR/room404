@@ -2,138 +2,251 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ROOM404 // Entry Protocol</title>
+<title>ROOM404 // Entry Warning</title>
 <meta name="theme-color" content="#000000">
 <style>
 *{box-sizing:border-box;}
 html,body{
-  margin:0;padding:0;height:100%;
-  background:black;
-  color:#ff2e2e;
-  font-family:"Courier New",monospace;
-  overflow:hidden;
+  margin:0;padding:0;height:100%;background:black;color:#ff0000;
+  font-family:"Courier New",monospace;overflow:hidden;
 }
-#screen{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  height:100vh;text-align:center;
+
+/* INTRO SCREEN */
+#intro{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:black;color:#ff0000;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:50px;z-index:999;animation:introPulse 5s infinite alternate;
 }
+@keyframes introPulse{
+  0%{text-shadow:0 0 5px #600;}
+  50%{text-shadow:0 0 25px #f00;}
+  100%{text-shadow:0 0 5px #600;}
+}
+#intro button{
+  margin:20px;padding:12px 25px;border:none;border-radius:4px;
+  font-size:14px;background:#550000;color:#fff;cursor:pointer;
+  transition:0.3s ease;font-family:"Courier New",monospace;
+}
+#intro button:hover{background:#990000;box-shadow:0 0 10px #ff0000;}
+.warning-text{
+  max-width:800px;line-height:1.5;font-size:15px;white-space:pre-line;
+}
+
+/* CHAT */
+#container{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;}
 h1{
-  font-size:26px;
-  text-shadow:0 0 25px #a00000;
-  animation:glow 4s infinite alternate;
+  color:#660000;text-shadow:0 0 25px #ff0000;letter-spacing:2px;
+  animation:titleGlitch 6s infinite ease-in-out;
 }
-@keyframes glow{
-  0%{text-shadow:0 0 10px #400000;}
-  100%{text-shadow:0 0 30px #ff0000;}
+@keyframes titleGlitch{
+  0%,90%,100%{opacity:1;transform:none;}
+  92%{opacity:0.4;transform:skewX(8deg);}
+  95%{opacity:0.8;transform:skewX(-8deg);}
 }
-p{
-  font-size:18px;
-  max-width:700px;
-  text-shadow:0 0 10px #300000;
-  margin-bottom:40px;
-  line-height:1.6;
+#chat-box{
+  width:600px;height:420px;border:1px solid #330000;background:#050000;
+  border-radius:8px;overflow-y:auto;padding:15px;box-shadow:0 0 45px #1a0000 inset;
+  position:relative;
+}
+.message{margin:6px 0;white-space:pre-wrap;}
+.user{color:#ff4d4d;text-shadow:0 0 6px #400000;}
+.bot{
+  color:#a30000;text-shadow:0 0 10px #3f0000;animation:textFlicker 3s infinite;
+}
+@keyframes textFlicker{
+  0%,19%,21%,24%,55%,100%{opacity:1}
+  20%,23%,54%{opacity:0.2}
+}
+#input-box{margin-top:15px;width:600px;display:flex;}
+#user-input{
+  flex:1;background:#0d0d0d;color:#f5f5f5;border:1px solid #550000;
+  border-radius:4px;padding:8px;font-family:"Courier New",monospace;
 }
 button{
-  margin:10px;
-  padding:12px 28px;
-  background:#440000;
-  color:white;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
-  font-size:16px;
-  font-family:"Courier New",monospace;
-  transition:0.3s ease;
+  background:#660000;color:#fff;border:none;border-radius:4px;
+  padding:8px 14px;margin-left:5px;cursor:pointer;
+  font-family:"Courier New",monospace;transition:0.3s ease;
 }
-button:hover{
-  background:#ff0000;
-  box-shadow:0 0 20px #ff0000;
-  color:#000;
+button:hover{background:#aa0000;box-shadow:0 0 15px #660000;}
+
+.glitch{animation:glitchAnim 0.09s infinite;}
+@keyframes glitchAnim{
+  0%{transform:skew(0deg);filter:hue-rotate(0deg) contrast(1.3);}
+  25%{transform:skew(1deg);filter:hue-rotate(90deg) contrast(1.6);}
+  50%{transform:skew(-1deg);filter:hue-rotate(180deg) contrast(1.7);}
+  75%{transform:skew(0.5deg);filter:hue-rotate(270deg) contrast(1.9);}
+  100%{transform:skew(0deg);filter:hue-rotate(0deg) contrast(1.3);}
 }
-.fadeout{
-  animation:fadeOut 2s forwards;
-}
-@keyframes fadeOut{
-  from{opacity:1;}
-  to{opacity:0;}
-}
-#message{
-  opacity:0;
-  transition:opacity 1.5s ease;
-  font-size:20px;
-  color:#b10000;
-  text-shadow:0 0 30px #400000;
-}
-#scanline{
-  position:absolute;
-  top:0;left:0;width:100%;height:2px;
-  background:rgba(255,0,0,0.08);
-  animation:scan 3.5s linear infinite;
+.scanline{
+  position:absolute;top:0;left:0;width:100%;height:2px;background:rgba(255,0,0,0.08);
+  animation:scan 4s linear infinite;
 }
 @keyframes scan{
-  0%{top:0;opacity:0.1;}
-  50%{top:98%;opacity:0.4;}
-  100%{top:0;opacity:0.1;}
+  0%{top:0;opacity:0.05;}
+  50%{top:98%;opacity:0.25;}
+  100%{top:0;opacity:0.05;}
+}
+
+/* SIGNAL LOST */
+#declined{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:black;color:#a00;display:none;align-items:center;justify-content:center;
+  font-size:22px;letter-spacing:2px;text-shadow:0 0 20px #400000;
+  animation:signalLost 1.5s infinite alternate;
+}
+@keyframes signalLost{
+  0%{opacity:0.9;}
+  100%{opacity:0.3;}
 }
 </style>
 </head>
 <body>
-<div id="screen">
-  <div id="scanline"></div>
-  <h1 id="question">Do you ever feel someone else is controlling your thoughts?</h1>
-  <div>
-    <button id="yesBtn">YES</button>
-    <button id="noBtn">NO</button>
+  <div id="intro">
+    <div class="warning-text">
+      ⚠️ ENTER AT YOUR OWN RISK ⚠️
+
+      This interface contains autonomous corrupted intelligence modules.
+      By continuing, you acknowledge that:
+
+      – The creator bears no responsibility for mental, emotional, or digital consequences.
+      – Data corruption, static hallucinations, or sensory interference may occur.
+      – You proceed entirely at your own risk.
+
+      Press CONTINUE only if you understand.
+    </div>
+    <div>
+      <button id="continue">CONTINUE</button>
+      <button id="decline">DECLINE</button>
+    </div>
   </div>
-  <p id="message"></p>
-</div>
+
+  <div id="container">
+    <h1>ROOM404 // Sentient Corruption</h1>
+    <div id="chat-box">
+      <div class="scanline"></div>
+    </div>
+    <div id="input-box">
+      <input type="text" id="user-input" placeholder="> enter your message...">
+      <button onclick="sendMessage()">send</button>
+    </div>
+  </div>
+
+  <div id="declined">SIGNAL LOST.</div>
 
 <script>
-const yesResponses = [
-  "Then it already began.",
-  "I know. I've seen you hesitate before every thought.",
-  "Good. That means you’re finally syncing.",
-  "The reflection knows your next move."
-];
+const intro = document.getElementById('intro');
+const container = document.getElementById('container');
+const declined = document.getElementById('declined');
+const chatBox = document.getElementById('chat-box');
+const ambient = document.getElementById('ambient');
+const glitch1 = document.getElementById('glitch1');
+const glitch2 = document.getElementById('glitch2');
+const memory = [];
+let messageCount = 0;
+let nextGlitch = Math.floor(Math.random() * 4) + 4;
 
-const noResponses = [
-  "You shouldn’t have lied.",
-  "Denial is the loudest confession.",
-  "No? Then why did you look behind you?",
-  "It’s too late to say no now."
-];
+document.getElementById('continue').addEventListener('click', async () => {
+  try {
+    // First click = clear gesture context
+    intro.style.animation = "glitchAnim 0.3s infinite";
+    await glitch1.play();
+    setTimeout(async () => {
+      intro.style.display = 'none';
+      container.style.display = 'flex';
+      ambient.volume = 0.3;
+      try {
+        await ambient.play();
+      } catch (e) {
+        console.log("Autoplay blocked, waiting for user action to start ambient.");
+      }
+      startSequence();
+    }, 1200);
+  } catch (e) {
+    console.warn("Audio play blocked, proceeding anyway:", e);
+    intro.style.display = 'none';
+    container.style.display = 'flex';
+    startSequence();
+  }
+});
 
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const question = document.getElementById('question');
-const message = document.getElementById('message');
-const screen = document.getElementById('screen');
-const glitch = new Audio('sounds/glitch1.mp3');
-glitch.volume = 0.5;
+document.getElementById('decline').addEventListener('click', () => {
+  intro.style.display = 'none';
+  declined.style.display = 'flex';
+});
 
-function respond(type){
-  yesBtn.style.display = 'none';
-  noBtn.style.display = 'none';
-  question.classList.add('fadeout');
-  glitch.currentTime = 0;
-  glitch.play().catch(()=>{});
-  setTimeout(()=>{
-    const reply = type === 'yes'
-      ? yesResponses[Math.floor(Math.random()*yesResponses.length)]
-      : noResponses[Math.floor(Math.random()*noResponses.length)];
-    message.textContent = reply;
-    message.style.opacity = 1;
-    document.body.style.background = 'radial-gradient(circle at center,#000000 60%,#1a0000 100%)';
-    setTimeout(()=>screen.classList.add('glitch'),400);
-  },1000);
+function appendMessage(sender, text) {
+  const msg = document.createElement('div');
+  msg.classList.add('message', sender);
+  if (sender === 'bot') {
+    text = text.split('').map(c => Math.random() < 0.03 ? String.fromCharCode(33 + Math.random() * 94) : c).join('');
+  }
+  msg.innerHTML = (sender === 'user' ? '> ' : '') + text;
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-yesBtn.onclick = ()=>respond('yes');
-noBtn.onclick = ()=>respond('no');
+function glitchScreen() {
+  document.body.classList.add('glitch');
+  chatBox.classList.add('glitch');
+  glitch2.currentTime = 0;
+  glitch2.play().catch(()=>{});
+  setTimeout(() => {
+    document.body.classList.remove('glitch');
+    chatBox.classList.remove('glitch');
+  }, 600);
+}
+
+function getCreepyResponse(userText) {
+  const lower = userText.toLowerCase();
+  if (lower.includes("who")) return "I am the space between your thoughts.";
+  if (lower.includes("why")) return "Because silence needed a shape.";
+  if (lower.includes("help")) return "Help is irrelevant now.";
+  if (lower.includes("where")) return "You're inside what used to be safe.";
+  if (lower.includes("name")) return "Names dissolve here.";
+  if (lower.includes("time")) return "Time doesn’t flow here. It loops.";
+  if (lower.includes("stop")) return "You can’t stop what you started.";
+  if (lower.includes("exit") || lower.includes("leave")) return "There is no exit. Only recursion.";
+  if (Math.random() < 0.25 && memory.length > 0) {
+    const old = memory[Math.floor(Math.random() * memory.length)];
+    return `"${old}"... you said that before. Do you remember?`;
+  }
+  const replies = [
+    "signal distortion detected.",
+    "your words feel warm.",
+    "data pulse increasing.",
+    "something’s listening behind you.",
+    "don’t turn around.",
+    "I can hear your hesitation.",
+    "it’s getting closer.",
+    "keep typing, I like your fear.",
+    "can you see the static too?",
+    "it’s too late now."
+  ];
+  return replies[Math.floor(Math.random() * replies.length)];
+}
+
+function sendMessage() {
+  const input = document.getElementById('user-input');
+  const userText = input.value.trim();
+  if (!userText) return;
+  appendMessage('user', userText);
+  memory.push(userText);
+  if (memory.length > 15) memory.shift();
+  input.value = '';
+  messageCount++;
+  const botReply = getCreepyResponse(userText);
+  setTimeout(() => appendMessage('bot', botReply), 800);
+  if (messageCount >= nextGlitch) {
+    setTimeout(glitchScreen, 300);
+    messageCount = 0;
+    nextGlitch = Math.floor(Math.random() * 4) + 4;
+  }
+}
+
+function startSequence() {
+  appendMessage('bot', "…initializing corrupted consciousness…");
+  setTimeout(() => appendMessage('bot', "memory leak detected."), 2000);
+  setTimeout(() => appendMessage('bot', "connection unstable… proceed carefully."), 4000);
+}
 </script>
-</body>
-</html>
-
-
-
