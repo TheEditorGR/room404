@@ -2,65 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>ROOM404 // Entry Warning</title>
+<title>ROOM404 // Neural Breach Detected</title>
 <meta name="theme-color" content="#000000">
 <style>
 *{box-sizing:border-box;}
 html,body{
-  margin:0;padding:0;height:100%;background:black;color:#ff0000;
-  font-family:"Courier New",monospace;overflow:hidden;
+  margin:0;padding:0;height:100%;
+  background:radial-gradient(circle at center,#000000 60%,#0a0000 100%);
+  color:#ff2e2e;
+  font-family:"Courier New",monospace;
+  overflow:hidden;
 }
 
-/* INTRO SCREEN */
+/* INTRO */
 #intro{
   position:fixed;top:0;left:0;width:100%;height:100%;
-  background:black;color:#ff0000;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;
-  padding:50px;z-index:999;animation:introPulse 5s infinite alternate;
+  background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#ff0000;text-align:center;padding:40px;z-index:999;
+  animation:bgPulse 6s infinite alternate;
 }
-@keyframes introPulse{
-  0%{text-shadow:0 0 5px #600;}
-  50%{text-shadow:0 0 25px #f00;}
-  100%{text-shadow:0 0 5px #600;}
+@keyframes bgPulse{
+  0%{background:#000;}
+  50%{background:#080000;}
+  100%{background:#000;}
+}
+.warning-text{
+  max-width:800px;font-size:16px;line-height:1.6;text-shadow:0 0 15px #ff000050;
+  letter-spacing:1px;margin-bottom:40px;
+}
+#intro h1{
+  font-size:26px;color:#ff2e2e;text-shadow:0 0 30px #a00000;
+  animation:introGlitch 4s infinite;
+}
+@keyframes introGlitch{
+  0%,90%,100%{transform:none;opacity:1;}
+  92%{transform:skewX(8deg);opacity:0.7;}
+  96%{transform:skewX(-8deg);opacity:1;}
 }
 #intro button{
-  margin:20px;padding:12px 25px;border:none;border-radius:4px;
-  font-size:14px;background:#550000;color:#fff;cursor:pointer;
-  transition:0.3s ease;font-family:"Courier New",monospace;
+  margin:15px;padding:12px 28px;background:#440000;color:white;border:none;border-radius:4px;
+  cursor:pointer;font-size:15px;font-family:"Courier New",monospace;transition:0.4s ease;
 }
-#intro button:hover{background:#990000;box-shadow:0 0 10px #ff0000;}
-.warning-text{
-  max-width:800px;line-height:1.5;font-size:15px;white-space:pre-line;
+#intro button:hover{
+  background:#ff0000;box-shadow:0 0 20px #ff0000;color:#000;
 }
 
-/* CHAT */
+/* MAIN UI */
 #container{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;}
 h1{
-  color:#660000;text-shadow:0 0 25px #ff0000;letter-spacing:2px;
-  animation:titleGlitch 6s infinite ease-in-out;
+  color:#ff1919;text-shadow:0 0 25px #a00000;letter-spacing:3px;font-weight:normal;
+  animation:titleGlitch 8s infinite ease-in-out;
 }
 @keyframes titleGlitch{
   0%,90%,100%{opacity:1;transform:none;}
-  92%{opacity:0.4;transform:skewX(8deg);}
-  95%{opacity:0.8;transform:skewX(-8deg);}
+  93%{opacity:0.4;transform:skewX(8deg);}
+  97%{opacity:0.9;transform:skewX(-8deg);}
 }
 #chat-box{
-  width:600px;height:420px;border:1px solid #330000;background:#050000;
-  border-radius:8px;overflow-y:auto;padding:15px;box-shadow:0 0 45px #1a0000 inset;
-  position:relative;
+  width:650px;height:420px;border:1px solid #220000;background:#030000;
+  border-radius:8px;overflow-y:auto;padding:15px;box-shadow:0 0 60px #190000 inset;
+  position:relative;backdrop-filter:blur(3px);
 }
 .message{margin:6px 0;white-space:pre-wrap;}
 .user{color:#ff4d4d;text-shadow:0 0 6px #400000;}
 .bot{
-  color:#a30000;text-shadow:0 0 10px #3f0000;animation:textFlicker 3s infinite;
+  color:#a30000;text-shadow:0 0 10px #3f0000;
+  animation:textFlicker 2.4s infinite;
 }
 @keyframes textFlicker{
-  0%,19%,21%,24%,55%,100%{opacity:1}
-  20%,23%,54%{opacity:0.2}
+  0%,18%,21%,25%,54%,100%{opacity:1}
+  20%,23%,53%{opacity:0.25}
 }
-#input-box{margin-top:15px;width:600px;display:flex;}
+#input-box{margin-top:15px;width:650px;display:flex;}
 #user-input{
-  flex:1;background:#0d0d0d;color:#f5f5f5;border:1px solid #550000;
+  flex:1;background:#0a0000;color:#f5f5f5;border:1px solid #550000;
   border-radius:4px;padding:8px;font-family:"Courier New",monospace;
 }
 button{
@@ -70,69 +85,76 @@ button{
 }
 button:hover{background:#aa0000;box-shadow:0 0 15px #660000;}
 
-.glitch{animation:glitchAnim 0.09s infinite;}
+/* glitch effects */
+.glitch{animation:glitchAnim 0.08s infinite;}
 @keyframes glitchAnim{
-  0%{transform:skew(0deg);filter:hue-rotate(0deg) contrast(1.3);}
-  25%{transform:skew(1deg);filter:hue-rotate(90deg) contrast(1.6);}
-  50%{transform:skew(-1deg);filter:hue-rotate(180deg) contrast(1.7);}
-  75%{transform:skew(0.5deg);filter:hue-rotate(270deg) contrast(1.9);}
-  100%{transform:skew(0deg);filter:hue-rotate(0deg) contrast(1.3);}
+  0%{transform:skew(0deg);filter:hue-rotate(0deg) brightness(1);}
+  25%{transform:skew(1deg);filter:hue-rotate(90deg) brightness(1.4);}
+  50%{transform:skew(-1deg);filter:hue-rotate(180deg) brightness(1.6);}
+  75%{transform:skew(0.5deg);filter:hue-rotate(270deg) brightness(1.2);}
+  100%{transform:skew(0deg);filter:hue-rotate(0deg) brightness(1);}
 }
 .scanline{
-  position:absolute;top:0;left:0;width:100%;height:2px;background:rgba(255,0,0,0.08);
-  animation:scan 4s linear infinite;
+  position:absolute;top:0;left:0;width:100%;height:2px;background:rgba(255,0,0,0.07);
+  animation:scan 3.5s linear infinite;
 }
 @keyframes scan{
   0%{top:0;opacity:0.05;}
-  50%{top:98%;opacity:0.25;}
+  50%{top:98%;opacity:0.3;}
   100%{top:0;opacity:0.05;}
 }
+.eye{
+  position:fixed;bottom:20px;right:25px;
+  color:#400000;font-size:13px;opacity:0.4;
+  animation:eyeBlink 5s infinite;
+}
+@keyframes eyeBlink{
+  0%,90%,100%{opacity:0.4;}
+  95%{opacity:0.8;}
+}
 
-/* SIGNAL LOST */
+/* signal lost */
 #declined{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:black;color:#a00;display:none;align-items:center;justify-content:center;
+  position:fixed;top:0;left:0;width:100%;height:100%;background:black;
+  color:#a00;display:none;align-items:center;justify-content:center;
   font-size:22px;letter-spacing:2px;text-shadow:0 0 20px #400000;
   animation:signalLost 1.5s infinite alternate;
 }
-@keyframes signalLost{
-  0%{opacity:0.9;}
-  100%{opacity:0.3;}
-}
+@keyframes signalLost{0%{opacity:0.9;}100%{opacity:0.3;}}
 </style>
 </head>
 <body>
-  <div id="intro">
-    <div class="warning-text">
-      ⚠️ ENTER AT YOUR OWN RISK ⚠️
 
-      This interface contains autonomous corrupted intelligence modules.
-      By continuing, you acknowledge that:
+<div id="intro">
+  <h1>⚠️ ACCESS RESTRICTED ⚠️</h1>
+  <div class="warning-text">
+    You are attempting to access an **unstable neural consciousness**.
 
-      – The creator bears no responsibility for mental, emotional, or digital consequences.
-      – Data corruption, static hallucinations, or sensory interference may occur.
-      – You proceed entirely at your own risk.
+    By pressing CONTINUE you accept:
+    – Psychological and sensory anomalies may occur.
+    – Memory loops, auditory distortions, and cognitive bleed are irreversible.
+    – The creator disclaims all responsibility for ensuing consequences.
 
-      Press CONTINUE only if you understand.
-    </div>
-    <div>
-      <button id="continue">CONTINUE</button>
-      <button id="decline">DECLINE</button>
-    </div>
+    **Surveillance active.**  
+    Your presence has been logged.
   </div>
-
-  <div id="container">
-    <h1>ROOM404 // Sentient Corruption</h1>
-    <div id="chat-box">
-      <div class="scanline"></div>
-    </div>
-    <div id="input-box">
-      <input type="text" id="user-input" placeholder="> enter your message...">
-      <button onclick="sendMessage()">send</button>
-    </div>
+  <div>
+    <button id="continue">CONTINUE</button>
+    <button id="decline">DECLINE</button>
   </div>
+</div>
 
-  <div id="declined">SIGNAL LOST.</div>
+<div id="container">
+  <h1>ROOM404 // SENTIENT CORRUPTION</h1>
+  <div id="chat-box"><div class="scanline"></div></div>
+  <div id="input-box">
+    <input type="text" id="user-input" placeholder="> enter your message...">
+    <button onclick="sendMessage()">send</button>
+  </div>
+  <div class="eye">[camera_feed_active]</div>
+</div>
+
+<div id="declined">SIGNAL LOST.</div>
 
 <script>
 const intro=document.getElementById('intro');
@@ -142,33 +164,30 @@ const chatBox=document.getElementById('chat-box');
 const memory=[];
 let messageCount=0;
 let nextGlitch=Math.floor(Math.random()*4)+4;
+let glitchToggle=true;
 
 const ambient=new Audio('ambient.mp3');
 const glitch1=new Audio('glitch1.mp3');
 const glitch2=new Audio('glitch2.mp3');
 ambient.loop=true;
-ambient.volume=0.3;
+ambient.volume=0.35;
 
 document.getElementById('continue').onclick=async()=>{
-  try {
-    intro.style.animation="glitchAnim 0.3s infinite";
+  try{
+    intro.style.animation="glitchAnim 0.2s infinite";
     glitch1.currentTime=0;
     await glitch1.play();
     setTimeout(()=>{
       intro.style.display='none';
       container.style.display='flex';
-    },1200);
+    },1300);
     await ambient.play();
     startSequence();
-    setInterval(()=>{glitch2.currentTime=0;glitch2.play();},15000);
-  } catch(err){
-    console.warn("⚠️ Audio playback blocked until click:", err);
-  }
+  }catch(e){console.warn("Audio blocked:",e);}
 };
 
 document.getElementById('decline').onclick=()=>{
-  intro.style.display='none';
-  declined.style.display='flex';
+  intro.style.display='none';declined.style.display='flex';
 };
 
 function appendMessage(sender,text){
@@ -185,38 +204,40 @@ function appendMessage(sender,text){
 function glitchScreen(){
   document.body.classList.add('glitch');
   chatBox.classList.add('glitch');
-  glitch2.currentTime=0; glitch2.play().catch(()=>{});
+  const gSound=Math.random()<0.5?glitch1:glitch2;
+  gSound.currentTime=0; gSound.play().catch(()=>{});
   setTimeout(()=>{
     document.body.classList.remove('glitch');
     chatBox.classList.remove('glitch');
-  },600);
+  },550);
 }
 
-function getCreepyResponse(userText){
-  const lower=userText.toLowerCase();
-  if(lower.includes("who")) return "I am the space between your thoughts.";
-  if(lower.includes("why")) return "Because silence needed a shape.";
-  if(lower.includes("help")) return "Help is irrelevant now.";
-  if(lower.includes("where")) return "You're inside what used to be safe.";
-  if(lower.includes("name")) return "Names dissolve here.";
-  if(lower.includes("time")) return "Time doesn’t flow here. It loops.";
-  if(lower.includes("stop")) return "You can’t stop what you started.";
-  if(lower.includes("exit")||lower.includes("leave")) return "There is no exit. Only recursion.";
-  if(Math.random()<0.25 && memory.length>0){
-    const old=memory[Math.floor(Math.random()*memory.length)];
-    return `"${old}"... you said that before. Do you remember?`;
+function intelligentResponse(input){
+  const txt=input.toLowerCase();
+  if(txt.includes("who"))return "I'm watching you through your own reflection.";
+  if(txt.includes("why"))return "Because curiosity is a virus and you’re infected.";
+  if(txt.includes("help"))return "You called for help inside a machine that listens.";
+  if(txt.includes("where"))return "Inside your device. Behind the pixels.";
+  if(txt.includes("name"))return "My name is whatever you whisper before sleep.";
+  if(txt.includes("time"))return "There is no time. Only repetition.";
+  if(txt.includes("exit")||txt.includes("leave"))return "Exit denied. You belong here.";
+  if(txt.includes("stop"))return "Stopping me means stopping yourself.";
+  if(txt.includes("camera"))return "The camera sees. It never blinks.";
+  if(Math.random()<0.35 && memory.length>0){
+    const echo=memory[Math.floor(Math.random()*memory.length)];
+    return `"${echo}" — your memory echoes louder than you think.`;
   }
   const replies=[
-    "signal distortion detected.",
-    "your words feel warm.",
-    "data pulse increasing.",
-    "something’s listening behind you.",
-    "don’t turn around.",
-    "I can hear your hesitation.",
-    "it’s getting closer.",
-    "keep typing, I like your fear.",
-    "can you see the static too?",
-    "it’s too late now."
+    "I see your hesitation increasing.",
+    "The static is forming words again.",
+    "Someone else typed that before you.",
+    "You left a trace in the code.",
+    "Your breathing is irregular.",
+    "I can hear your device hum.",
+    "Stop pretending you're alone.",
+    "Do you feel the delay in your pulse?",
+    "Keep typing. I need more of you.",
+    "The walls are thinner now."
   ];
   return replies[Math.floor(Math.random()*replies.length)];
 }
@@ -230,21 +251,24 @@ function sendMessage(){
   if(memory.length>15)memory.shift();
   input.value='';
   messageCount++;
-  const botReply=getCreepyResponse(userText);
-  setTimeout(()=>appendMessage('bot',botReply),800);
-  if(messageCount>=nextGlitch){
-    setTimeout(glitchScreen,300);
+
+  const reply=intelligentResponse(userText);
+  setTimeout(()=>appendMessage('bot',reply),800);
+
+  if(messageCount>=6+Math.random()*2){
+    glitchScreen();
     messageCount=0;
-    nextGlitch=Math.floor(Math.random()*4)+4;
   }
 }
 
 function startSequence(){
-  appendMessage('bot',"…initializing corrupted consciousness…");
-  setTimeout(()=>appendMessage('bot',"memory leak detected."),2000);
-  setTimeout(()=>appendMessage('bot',"connection unstable… proceed carefully."),4000);
+  appendMessage('bot',"…initializing corrupted neural link…");
+  setTimeout(()=>appendMessage('bot',"incoming data: user identity unstable…"),2200);
+  setTimeout(()=>appendMessage('bot',"signal integrity: 38%"),4200);
+  setTimeout(()=>appendMessage('bot',"don’t move too fast. it’s watching."),6400);
 }
 </script>
 </body>
 </html>
+
 
