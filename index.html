@@ -1,349 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ROOM404 — Neural Access Protocol (INTENSE)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROOM404 // Neural Interface</title>
+
 <style>
-  :root{
-    --red:#ff1a1a;
-    --dark:#070707;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:#000;color:var(--red);font-family:"Courier New",monospace;overflow:hidden}
-  :root{
-    --red:#ff1a1a;
-    --deep-red:#7a0000;
-    --ember:#ff4d4d;
-    --void:#020101;
-    --shadow:#070707;
-  }
-  *{box-sizing:border-box}
-  html,body{
-    height:100%;margin:0;background:#000;color:var(--red);
-    font-family:"Courier New",monospace;overflow:hidden;letter-spacing:0.6px;
-  }
-  body{
-    position:relative;
-    background:radial-gradient(circle at 20% 20%,rgba(80,0,0,0.45),transparent 55%),
-               radial-gradient(circle at 80% 15%,rgba(120,0,0,0.25),transparent 60%),
-               radial-gradient(circle at center,rgba(0,0,0,0.96),rgba(0,0,0,1));
-  }
-  body::before,body::after{
-    content:"";position:fixed;inset:-80px;pointer-events:none;mix-blend-mode:screen;opacity:0.18;
-    background:
-      repeating-linear-gradient(0deg,rgba(255,0,0,0.18) 0,rgba(255,0,0,0.18) 2px,transparent 2px,transparent 6px),
-      repeating-linear-gradient(90deg,rgba(255,255,255,0.04) 0,rgba(255,255,255,0.04) 6px,transparent 6px,transparent 18px);
-    animation:staticFlicker 420ms steps(2) infinite;
-  }
-  body::after{opacity:0.3;mix-blend-mode:color-dodge;filter:blur(2px);animation-duration:280ms;}
-  @keyframes staticFlicker{0%{transform:translate3d(0,0,0);}50%{transform:translate3d(-6px,3px,0);}100%{transform:translate3d(4px,-5px,0);}}
-  /* Intro */
-  #intro{
-    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at center,#000 30%, #0a0000 100%);
-    flex-direction:column;padding:40px;text-align:center;z-index:40;
-  }
-  h1{font-size:28px;letter-spacing:2px;text-shadow:0 0 30px #900}
-  .warning{
-    max-width:900px;color:#ffdddd;opacity:0.95;margin:18px 0;line-height:1.6;
-    border:1px solid rgba(255,0,0,0.06);padding:18px;border-radius:6px;background:rgba(10,0,0,0.35);
-  }
-  .controls{display:flex;gap:18px;margin-top:18px}
-  button{background:#220000;color:#fff;border:1px solid #660000;padding:12px 22px;border-radius:6px;cursor:pointer;font-size:15px}
-  button:hover{background:#990000;color:#000;box-shadow:0 0 22px #ff0000}
-  #intro{
-    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at center,#030000 20%, #050000 40%, #000 70%);
-    flex-direction:column;padding:40px;text-align:center;z-index:40;
-    overflow:hidden;
-  }
-  #intro.rupture{animation:introRupture 0.6s steps(2) forwards;}
-  @keyframes introRupture{0%{opacity:1;filter:none;}50%{opacity:0.5;filter:contrast(2) saturate(1.6);}100%{opacity:0;filter:contrast(3) saturate(2);transform:scale(1.06);}}
-  #intro.rupture .warning{animation:warningBurst 0.6s steps(2) forwards;}
-  @keyframes warningBurst{0%{transform:scale(1);opacity:1;}70%{transform:scale(1.08);opacity:0.4;}100%{transform:scale(1.2);opacity:0;}}
-  #intro::before,#intro::after{
-    content:"";position:absolute;inset:-120px;pointer-events:none;mix-blend-mode:screen;
-    background:conic-gradient(from 90deg,rgba(255,0,0,0.18),rgba(0,0,0,0) 30%,rgba(255,0,0,0.22) 60%,rgba(255,255,255,0.08) 80%,rgba(0,0,0,0));
-    animation:introPulse 2.6s ease-in-out infinite;
-  }
-  #intro::after{animation-duration:1.6s;filter:blur(6px);opacity:0.55;}
-  @keyframes introPulse{0%{transform:rotate(0deg) scale(1);}50%{transform:rotate(12deg) scale(1.08);}100%{transform:rotate(0deg) scale(1);}}
-  h1{font-size:32px;letter-spacing:4px;text-shadow:0 0 35px #c00,0 0 12px rgba(255,0,0,0.45);margin-bottom:8px;}
-  .intro-sigil{
-    font-size:14px;letter-spacing:6px;color:#ffcccc;text-transform:uppercase;opacity:0.82;
-    margin-bottom:18px;text-shadow:0 0 12px rgba(255,0,0,0.4);
-  }
-  .warning{
-    max-width:900px;color:#ffdddd;opacity:0.97;margin:18px 0;line-height:1.7;
-    border:1px solid rgba(255,0,0,0.25);padding:26px;border-radius:10px;background:rgba(10,0,0,0.55);
-    box-shadow:0 0 50px rgba(255,0,0,0.25) inset,0 0 30px rgba(140,0,0,0.45);
-    position:relative;overflow:hidden;
-  }
-  .warning::before{
-    content:"";position:absolute;inset:0;mix-blend-mode:screen;opacity:0.35;
-    background:repeating-linear-gradient(0deg,rgba(255,0,0,0.2) 0,rgba(255,0,0,0.2) 1px,transparent 1px,transparent 4px);
-    animation:warningScan 1.2s linear infinite;
-  }
-  @keyframes warningScan{0%{transform:translateY(-12px);}100%{transform:translateY(12px);}}
-  .controls{display:flex;gap:18px;margin-top:18px}
-  button{
-    background:linear-gradient(180deg,#2b0000 0%,#130000 100%);
-    color:#fff;border:1px solid #990000;padding:13px 28px;border-radius:8px;cursor:pointer;font-size:15px;letter-spacing:2px;
-    text-transform:uppercase;box-shadow:0 0 18px rgba(255,0,0,0.25);
-    transition:transform 0.2s ease,box-shadow 0.2s ease;
-  }
-  button:hover{background:#ff0000;color:#000;box-shadow:0 0 40px #ff0000;transform:scale(1.05);}
-  .warning-sub{text-shadow:0 0 18px rgba(255,0,0,0.35);}
-  .intro-note{text-shadow:0 0 12px rgba(255,0,0,0.3);letter-spacing:2px;}
-  /* Decline intense overlay */
-  #declined{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#000;z-index:80;flex-direction:column;color:#f33;font-size:28px;letter-spacing:3px}
-  #declined .line{font-weight:700;font-size:38px;mix-blend-mode:screen}
-  #declined{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#020000;z-index:80;flex-direction:column;color:#f33;font-size:28px;letter-spacing:3px;overflow:hidden;}
-  #declined::before{content:"";position:absolute;inset:-40px;background:radial-gradient(circle at center,rgba(255,0,0,0.12),transparent 60%);mix-blend-mode:screen;animation:declinePulse 120ms steps(2) infinite;}
-  @keyframes declinePulse{0%{transform:scale(1);}50%{transform:scale(1.1);}100%{transform:scale(1);}}
-  #declined .line{font-weight:700;font-size:42px;mix-blend-mode:screen;text-shadow:0 0 40px rgba(255,0,0,0.8);}
-  /* Chat screen */
-  #screen{display:none;position:fixed;inset:0;z-index:20;padding:28px;display:flex;flex-direction:column;align-items:center;gap:18px}
-  .scanline{position:absolute;top:0;left:0;height:2px;width:100%;background:rgba(255,0,0,0.06);animation:scan 3.5s linear infinite;z-index:21}
-  @keyframes scan{0%{top:0;opacity:0.06}50%{top:98%;opacity:0.28}100%{top:0;opacity:0.06}}
-  #panel{width:900px;max-width:calc(100% - 80px);height:520px;background:linear-gradient(180deg,#050202 0%, #0a0000 100%);border-radius:10px;border:1px solid rgba(255,0,0,0.06);box-shadow:0 0 80px #0a0000 inset;overflow:hidden;position:relative}
-  #panel .top{padding:18px;color:#ffb3b3;border-bottom:1px solid rgba(255,0,0,0.04);font-weight:700}
-  #qbox{height:380px;padding:20px;overflow-y:auto;color:#ffdede}
-  #q{font-size:20px;line-height:1.6;max-width:820px}
-  #screen{display:none;position:fixed;inset:0;z-index:20;padding:28px;display:flex;flex-direction:column;align-items:center;gap:18px;backdrop-filter:contrast(1.2);}
-  .scanline{position:absolute;top:0;left:0;height:2px;width:100%;background:rgba(255,0,0,0.08);animation:scan 2.8s linear infinite;z-index:21}
-  @keyframes scan{0%{top:0;opacity:0.1}50%{top:98%;opacity:0.35}100%{top:0;opacity:0.1}}
-  #panel{width:900px;max-width:calc(100% - 80px);height:520px;background:linear-gradient(180deg,rgba(8,0,0,0.95) 0%, rgba(2,0,0,0.85) 100%);border-radius:14px;border:1px solid rgba(255,0,0,0.22);box-shadow:0 0 120px rgba(255,0,0,0.28),0 0 65px rgba(0,0,0,0.8) inset;overflow:hidden;position:relative;backdrop-filter:blur(3px);}
-  #panel::before{content:"";position:absolute;inset:-1px;border-radius:14px;pointer-events:none;border:1px solid rgba(255,0,0,0.35);opacity:0.6;mix-blend-mode:screen;animation:panelScan 1.4s linear infinite;}
-  @keyframes panelScan{0%{clip-path:inset(0 0 85% 0);}50%{clip-path:inset(85% 0 0 0);}100%{clip-path:inset(0 0 85% 0);}}
-  #panel .top{padding:22px;color:#ffb3b3;border-bottom:1px solid rgba(255,0,0,0.14);font-weight:700;font-size:17px;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 18px rgba(255,0,0,0.35);}
-  #qbox{height:380px;padding:28px;overflow-y:auto;color:#ffdede;background:linear-gradient(180deg,rgba(8,0,0,0.75) 0%,rgba(20,0,0,0.45) 100%);box-shadow:inset 0 0 60px rgba(255,0,0,0.18);}
-  #q{font-size:22px;line-height:1.75;max-width:820px;text-shadow:0 0 14px rgba(255,0,0,0.35);}
-  .choices{display:flex;gap:18px;margin-top:18px}
-  .bigbtn{padding:14px 30px;background:#2a0000;color:#fff;border:1px solid #880000;border-radius:8px;cursor:pointer;font-size:16px}
-  .bigbtn:hover{background:#ff0000;color:#000;box-shadow:0 0 30px #ff0000}
-  .bigbtn{padding:16px 34px;background:linear-gradient(180deg,#400000 0%,#140000 100%);color:#fff;border:1px solid #b30000;border-radius:10px;cursor:pointer;font-size:16px;letter-spacing:3px;text-transform:uppercase;box-shadow:0 0 28px rgba(255,0,0,0.3);transition:transform 0.2s ease,box-shadow 0.2s ease;}
-  .bigbtn:hover{background:#ff0000;color:#000;box-shadow:0 0 48px #ff0000;transform:scale(1.08);}
-  /* GLITCH visual (intense) */
-  .glitch-screen{␍␊
-    position:fixed;inset:0;pointer-events:none;z-index:100;mix-blend-mode:overlay;opacity:0.85;
-    background:transparent;
-  }␍␊
-  .glitch-screen{␊
-    position:fixed;inset:0;pointer-events:none;z-index:100;mix-blend-mode:overlay;opacity:0.95;
-    background:radial-gradient(circle at center,rgba(255,0,0,0.12),transparent 65%);
-  }␊
-  .scan-glitch{
-    position:absolute;inset:0;background-image:
-      linear-gradient(transparent 0, rgba(255,0,0,0.06) 2px, transparent 4px);
-    animation:glitchMove 70ms steps(2) infinite;
-    opacity:0;
-  }
-  @keyframes glitchMove { 0%{transform:translate(0,0)} 50%{transform:translate(4px,-3px)} 100%{transform:translate(0,0)}}
-  /* shake flash */
-  .flash{animation:flashAnim 160ms ease; background:radial-gradient(circle at center, rgba(255,0,0,0.08), transparent 30%);}
-  @keyframes flashAnim{0%{opacity:1}100%{opacity:0}}
-  .shake{animation:shakeAnim 400ms linear}
-  @keyframes shakeAnim{0%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-6px)}100%{transform:translateX(0)}}
-  .flash{animation:flashAnim 160ms ease; background:radial-gradient(circle at center, rgba(255,0,0,0.2), transparent 25%);}
-  @keyframes flashAnim{0%{opacity:1}100%{opacity:0}}
-  .strobe::before{opacity:0.4!important;animation-duration:90ms!important;}
-  .shake{animation:shakeAnim 420ms linear}
-  @keyframes shakeAnim{0%{transform:translateX(0)}20%{transform:translate(-12px,4px)}40%{transform:translate(10px,-6px)}60%{transform:translate(-8px,6px)}80%{transform:translate(12px,-4px)}100%{transform:translateX(0)}}
-  .tremor{animation:tremorAnim 260ms linear}
-  @keyframes tremorAnim{0%{transform:translateX(0);}50%{transform:translate(-6px,3px);}100%{transform:translate(4px,-2px);}}
-  /* Decline garble */
-  .garble{font-family:monospace;font-size:56px;letter-spacing:6px;text-shadow:0 0 30px #900}
-  /* small helpers */
-  .muted{color:#b07070;font-size:13px}
-  @media(max-width:920px){
-    #panel{width:calc(100% - 40px);height:60vh}
-    #q{font-size:18px}
-  }
-</style>
-  @media(max-width:920px){
-    #panel{width:calc(100% - 40px);height:60vh}
-    #q{font-size:18px}
-  }
+body,html{
+  margin:0;padding:0;background:#000;color:#fff;font-family:"Consolas","Segoe UI",monospace;
+  overflow:hidden;user-select:none;
+}
+#intro,#declined,#screen{
+  position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:20px;
+}
+#intro{display:flex;animation:fadeIn 1.2s ease forwards;background:#000;}
+#declined{background:#000;z-index:20;}
+#screen{background:radial-gradient(circle at center,#060000 0%,#000 100%);z-index:10;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-  /* transcript + omega glitch overlay */
-  #transcriptOverlay{
-    position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
-    background:radial-gradient(circle at center,rgba(0,0,0,0.97) 0%,rgba(15,0,0,0.96) 45%,rgba(0,0,0,0.99) 100%);
-    overflow:hidden;color:#ffdfdf;text-transform:none;pointer-events:none;
-  }
-  #transcriptOverlay.active{display:flex;animation:overlayPulse 160ms steps(2) 18 alternate;}
-  @keyframes overlayPulse{0%{filter:contrast(1.1) saturate(1);}100%{filter:contrast(2) saturate(1.7);} }
-  #transcriptOverlay .mega-noise{
-    position:absolute;inset:-40px;
-    background:
-      repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0,rgba(255,0,0,0.08) 2px,transparent 2px,transparent 6px),
-      repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 4px,transparent 4px,transparent 12px);
-    mix-blend-mode:screen;
-    animation:noiseDrift 120ms steps(2) infinite;
-    opacity:0.7;
-  }
-  @keyframes noiseDrift{0%{transform:translate(0,0)}50%{transform:translate(-12px,6px)}100%{transform:translate(8px,-4px)}}
-  .transcript-panel{
-    position:relative;z-index:210;width:960px;max-width:calc(100% - 60px);pointer-events:auto;
-    border:1px solid rgba(255,0,0,0.32);background:rgba(6,0,0,0.95);box-shadow:0 0 160px rgba(255,0,0,0.35),0 0 90px rgba(0,0,0,0.9);
-    padding:36px 38px;display:flex;flex-direction:column;gap:20px;font-size:15px;
-    transform:skewX(-1.5deg) scale(1.02);
-  }
-  .transcript-panel::before{
-    content:"";position:absolute;inset:-14px;border:1px solid rgba(255,0,0,0.2);
-    filter:blur(0.5px);pointer-events:none;animation:panelGlitch 180ms steps(2) infinite;
-  }
-  @keyframes panelGlitch{0%{clip-path:inset(0 0 0 0);}33%{clip-path:inset(10% 0 22% 0);}66%{clip-path:inset(0 0 16% 0);}100%{clip-path:inset(0 0 0 0);}}
-  .transcript-header{
-    font-size:17px;letter-spacing:3px;color:#ffbebe;display:flex;flex-direction:column;gap:6px;
-  }
-  .transcript-header span{font-size:12px;color:#ff8a8a;letter-spacing:4px;}
-  #transcriptBody{
-    max-height:340px;overflow-y:auto;border:1px solid rgba(255,0,0,0.28);
-    padding:22px;background:rgba(14,0,0,0.7);box-shadow:inset 0 0 50px rgba(255,0,0,0.18);
-    scroll-behavior:smooth;position:relative;
-  }
-  .transcript-entry{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid rgba(255,0,0,0.16);display:grid;grid-template-columns:110px 1fr;gap:18px;align-items:start;}
-  .transcript-entry:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-  .transcript-tag{font-size:13px;letter-spacing:2px;color:#ff7575;text-transform:uppercase;}
-  .transcript-text{display:flex;flex-direction:column;gap:6px;line-height:1.5;color:#ffdcdc;}
-  .transcript-text .speaker{font-size:12px;letter-spacing:3px;color:#ff9494;}
-  .transcript-text .content{font-size:16px;color:#fff;border-left:2px solid rgba(255,0,0,0.3);padding-left:10px;text-shadow:0 0 8px rgba(255,0,0,0.35);}
-  .transcript-text .reply{font-size:15px;color:#fffcfc;border-left:2px solid rgba(255,255,255,0.2);padding-left:10px;text-shadow:0 0 12px rgba(255,0,0,0.45);}
-  #transcriptFooter{
-    font-size:13px;letter-spacing:4px;color:#ffb5b5;text-align:center;text-transform:uppercase;text-shadow:0 0 18px rgba(255,0,0,0.35);
-  }
-  #finalNotice{
-    font-size:24px;letter-spacing:7px;color:#ffe5e5;text-align:center;margin-top:16px;
-    opacity:0;transform:translateY(26px);transition:opacity 0.5s ease,transform 0.5s ease;line-height:1.9;text-shadow:0 0 26px rgba(255,0,0,0.75);
-    position:relative;padding:0 18px;
-  }
-  #finalNotice::before{
-    content:"";position:absolute;inset:-18px;pointer-events:none;border:1px solid rgba(255,0,0,0.35);opacity:0.6;mix-blend-mode:screen;animation:noticeGlitch 0.12s steps(2) infinite;}
-  @keyframes noticeGlitch{0%{clip-path:inset(0 0 100% 0);}50%{clip-path:inset(100% 0 0 0);}100%{clip-path:inset(0 0 100% 0);}}
-  #finalNotice.revealed{opacity:1;transform:translateY(0);}
-  body.omega-glitch{
-    animation:omegaPulse 140ms steps(3) 32;filter:contrast(1.8) saturate(1.9) hue-rotate(-30deg);
-  }
-  @keyframes omegaPulse{0%{transform:scale(1);}40%{transform:scale(1.03);}100%{transform:scale(0.97);}}
-  body.omega-glitch::before,body.omega-glitch::after{
-    content:"";position:fixed;inset:-40px;background:repeating-linear-gradient(90deg,rgba(255,0,0,0.22) 0,rgba(255,0,0,0.22) 6px,transparent 6px,transparent 12px);
-    mix-blend-mode:screen;pointer-events:none;animation:omegaTear 60ms steps(2) infinite;z-index:500;opacity:0.82;
-  }
-  body.omega-glitch::after{animation-duration:90ms;mix-blend-mode:color-dodge;opacity:0.6;filter:blur(3px);}
-  @keyframes omegaTear{0%{transform:translate(0,0);}50%{transform:translate(-18px,8px);}100%{transform:translate(12px,-10px);}}
-  body.oblivion::before,body.oblivion::after{opacity:0.95!important;filter:blur(1px);animation-duration:40ms!important;}
-  #screen.omega-shake{animation:hyperShake 90ms steps(2) 18;}
-  @keyframes hyperShake{0%{transform:translate(0,0);}50%{transform:translate(-12px,8px);}100%{transform:translate(14px,-6px);}}
-  .overlay-glow{
-    position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,rgba(255,0,0,0.25) 0,transparent 60%);
-    animation:glowPulse 3s ease-in-out infinite;
-  }
-  @keyframes glowPulse{0%{opacity:0.45;}50%{opacity:0.85;}100%{opacity:0.45;}}
+h1{font-size:22px;letter-spacing:3px;color:#ff5555;}
+.warning{font-size:15px;line-height:1.6;color:#ffbbbb;max-width:700px;}
+.controls{margin-top:25px;display:flex;gap:18px;justify-content:center}
+#btnContinue,#btnDecline{
+  padding:10px 24px;border:1px solid #ff3333;background:#1a0000;color:#fff;cursor:pointer;border-radius:8px;
+  transition:all 0.3s;font-size:16px;
+}
+#btnContinue:hover{background:#ff3333;color:#000;box-shadow:0 0 20px #ff0000;}
+#btnDecline:hover{background:#440000;box-shadow:0 0 12px #a00;}
 
-  @media(max-width:720px){
-    .transcript-panel{padding:24px 18px;gap:12px;}
-    .transcript-entry{grid-template-columns:1fr;}
-    .transcript-tag{text-align:left;}
-    #transcriptBody{max-height:50vh;}
-    #finalNotice{font-size:18px;letter-spacing:4px;}
-  }
+#panel{width:760px;max-width:90%;background:rgba(10,0,0,0.85);
+  border:1px solid rgba(255,0,0,0.15);border-radius:8px;padding:20px 30px;
+  display:flex;flex-direction:column;gap:20px;box-shadow:0 0 40px rgba(255,0,0,0.15);}
+#q{font-size:20px;line-height:1.6;max-width:820px;}
+.choices{display:flex;gap:18px;margin-top:18px;justify-content:center}
+.bigbtn{padding:14px 30px;background:#2a0000;color:#fff;border:1px solid #880000;border-radius:8px;cursor:pointer;font-size:16px}
+.bigbtn:hover{background:#ff0000;color:#000;box-shadow:0 0 30px #ff0000;}
+.muted{color:#b07070;font-size:13px}
+
+.glitch-screen{
+  position:fixed;inset:0;pointer-events:none;z-index:100;mix-blend-mode:overlay;opacity:0.85;
+}
+.scan-glitch{
+  position:absolute;inset:0;
+  background-image:linear-gradient(transparent 0, rgba(255,0,0,0.06) 2px, transparent 4px);
+  animation:glitchMove 70ms steps(2) infinite;opacity:0;
+}
+@keyframes glitchMove{0%{transform:translate(0,0)}50%{transform:translate(4px,-3px)}100%{transform:translate(0,0)}}
+.flash{animation:flashAnim 160ms ease;background:radial-gradient(circle at center,rgba(255,0,0,0.08),transparent 30%);}
+@keyframes flashAnim{0%{opacity:1}100%{opacity:0}}
+.shake{animation:shakeAnim 400ms linear;}
+@keyframes shakeAnim{0%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-6px)}100%{transform:translateX(0)}}
+.garble{font-family:monospace;font-size:56px;letter-spacing:6px;text-shadow:0 0 30px #900;}
+
+#transcriptOverlay{
+  position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  background:radial-gradient(circle at center,rgba(0,0,0,0.95) 0%,rgba(3,0,0,0.98) 60%,#000 100%);
+  overflow:hidden;color:#ffdfdf;text-transform:none;pointer-events:none;
+}
+#transcriptOverlay.active{display:flex;animation:overlayPulse 260ms steps(2) 10 alternate;}
+@keyframes overlayPulse{0%{filter:contrast(1.1) saturate(1)}100%{filter:contrast(1.6) saturate(1.5)}}
+#transcriptOverlay .mega-noise{
+  position:absolute;inset:-40px;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,0,0,0.08) 0,rgba(255,0,0,0.08) 2px,transparent 2px,transparent 6px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 4px,transparent 4px,transparent 12px);
+  mix-blend-mode:screen;animation:noiseDrift 120ms steps(2) infinite;opacity:0.7;
+}
+@keyframes noiseDrift{0%{transform:translate(0,0)}50%{transform:translate(-12px,6px)}100%{transform:translate(8px,-4px)}}
+.transcript-panel{
+  position:relative;z-index:210;width:960px;max-width:calc(100% - 60px);pointer-events:auto;
+  border:1px solid rgba(255,0,0,0.22);background:rgba(4,0,0,0.92);box-shadow:0 0 120px rgba(255,0,0,0.25);
+  padding:32px 34px;display:flex;flex-direction:column;gap:18px;font-size:15px;
+  transform:skewX(-1deg) scale(1.01);
+}
+.transcript-panel::before{
+  content:"";position:absolute;inset:-12px;border:1px solid rgba(255,0,0,0.14);
+  filter:blur(0.5px);pointer-events:none;animation:panelGlitch 240ms steps(2) infinite;
+}
+@keyframes panelGlitch{0%{clip-path:inset(0 0 0 0);}33%{clip-path:inset(10% 0 22% 0);}66%{clip-path:inset(0 0 16% 0);}100%{clip-path:inset(0 0 0 0);}}
+.transcript-header{font-size:17px;letter-spacing:3px;color:#ffbebe;display:flex;flex-direction:column;gap:6px;}
+.transcript-header span{font-size:12px;color:#ff8a8a;letter-spacing:4px;}
+#transcriptBody{
+  max-height:340px;overflow-y:auto;border:1px solid rgba(255,0,0,0.18);
+  padding:18px;background:rgba(14,0,0,0.65);box-shadow:inset 0 0 30px rgba(255,0,0,0.12);
+}
+.transcript-entry{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid rgba(255,0,0,0.08);display:grid;grid-template-columns:110px 1fr;gap:14px;}
+.transcript-entry:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.transcript-tag{font-size:13px;letter-spacing:2px;color:#ff7575;text-transform:uppercase;}
+.transcript-text{display:flex;flex-direction:column;gap:6px;line-height:1.5;color:#ffdcdc;}
+.transcript-text .speaker{font-size:12px;letter-spacing:3px;color:#ff9494;}
+.transcript-text .content{font-size:16px;color:#fff;border-left:2px solid rgba(255,0,0,0.3);padding-left:10px;text-shadow:0 0 8px rgba(255,0,0,0.35);}
+.transcript-text .reply{font-size:15px;color:#fffcfc;border-left:2px solid rgba(255,255,255,0.2);padding-left:10px;text-shadow:0 0 12px rgba(255,0,0,0.45);}
+#transcriptFooter{font-size:13px;letter-spacing:4px;color:#ffb5b5;text-align:center;text-transform:uppercase;}
+#finalNotice{font-size:22px;letter-spacing:6px;color:#ffe5e5;text-align:center;margin-top:12px;opacity:0;transform:translateY(18px);transition:opacity 0.4s,transform 0.4s;}
+#finalNotice.revealed{opacity:1;transform:translateY(0);}
+body.omega-glitch{animation:omegaPulse 140ms steps(3) 22;filter:contrast(1.8) saturate(1.8) hue-rotate(-25deg);}
+@keyframes omegaPulse{0%{transform:scale(1);}50%{transform:scale(1.02);}100%{transform:scale(0.99);}}
+#screen.omega-shake{animation:hyperShake 90ms steps(2) 18;}
+@keyframes hyperShake{0%{transform:translate(0,0);}50%{transform:translate(-12px,8px);}100%{transform:translate(14px,-6px);}}
+.overlay-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,rgba(255,0,0,0.25) 0,transparent 60%);animation:glowPulse 3s ease-in-out infinite;}
+@keyframes glowPulse{0%{opacity:0.45;}50%{opacity:0.85;}100%{opacity:0.45;}}
+@media(max-width:720px){
+  .transcript-panel{padding:24px 18px;gap:12px;}
+  .transcript-entry{grid-template-columns:1fr;}
+  #transcriptBody{max-height:50vh;}
+  #finalNotice{font-size:18px;letter-spacing:4px;}
+}
 </style>
 </head>
 <body>
-  <div id="intro" role="dialog" aria-modal="true">
-    <div class="scanline" style="z-index:60"></div>
-    <h1>NEURAL ACCESS PROTOCOL // LEVEL 7 RESTRICTION</h1>
-    <div class="warning" style="margin-top:18px">
-      <strong>SECURE NOTICE — AUTHORIZED PERSONNEL ONLY</strong><br><br>
-      You are about to establish a live tunnel into an unstable cognitive matrix.  
-      This endpoint may cause: perceptual fragmentation, intrusive memory playback, identity drift, or persistent auditory phenomena.<br><br>
-      Proceed only if you accept full responsibility for psychological & digital effects.
-    </div>
-    <div class="controls">
-      <button id="btnContinue">CONTINUE</button>
-      <button id="btnDecline">DECLINE</button>
-    </div>
-    <div class="muted" style="margin-top:12px">Press Continue to authorize neural handshake (strong glitch will occur).</div>
-  </div>
-  <div id="intro" role="dialog" aria-modal="true">
-    <div class="scanline" style="z-index:60"></div>
-    <div class="intro-sigil">Department of Neural Deviance — Room404</div>
-    <h1>NEURAL ACCESS PROTOCOL // LEVEL SEVEN BREACH WARNING</h1>
-    <div class="warning" style="margin-top:18px">
-      <strong>OFFICIAL THREAT ADVISORY</strong><br><br>
-      You are preparing to splice your cognition with the Room404 anomaly archive.<br>
-      Documented sequelae include: involuntary memory overwrite, ocular static, long-term empathy erosion,<br>
-      and post-session echoing of non-human voices.<br><br>
-      Continuation constitutes acceptance of full legal, biological, and metaphysical liability. The Directorate will<br>
-      neither retrieve nor restore you.
-    </div>
-    <div class="warning-sub" style="margin-top:12px;color:#ffbfbf;letter-spacing:3px;text-transform:uppercase;font-size:13px;">
-      Confirm only if your psyche is expendable.
-    </div>
-    <div class="controls">
-      <button id="btnContinue">CONTINUE</button>
-      <button id="btnDecline">DECLINE</button>
-    </div>
-    <div class="muted intro-note" style="margin-top:14px">Initiating will trigger containment sirens, seizure-grade visual noise, and irreversible indexing.</div>
-  </div>
 
-  <div id="declined" aria-hidden="true">
-    <div class="line garble" id="declineLine">ERR0R 4Ø4</div>
+<div id="intro" role="dialog" aria-modal="true">
+  <h1>NEURAL ACCESS PROTOCOL // LEVEL 7 RESTRICTION</h1>
+  <div class="warning">
+    <strong>SECURE NOTICE — AUTHORIZED PERSONNEL ONLY</strong><br><br>
+    You are about to establish a live tunnel into an unstable cognitive matrix.  
+    This endpoint may cause: perceptual fragmentation, intrusive memory playback, identity drift, or persistent auditory phenomena.<br><br>
+    Proceed only if you accept full responsibility for psychological & digital effects.
   </div>
-
-  <div id="screen" aria-hidden="true">
-    <div class="scanline" style="z-index:60"></div>
-    <div id="panel">
-      <div class="top">ROOM404 // SENTIENT INTERFACE</div>
-      <div id="qbox"><div id="q"></div></div>
-      <div style="padding:18px;border-top:1px solid rgba(255,0,0,0.03);display:flex;align-items:center;justify-content:center">
-        <div class="choices">
-          <button class="bigbtn" id="yesBtn">YES</button>
-          <button class="bigbtn" id="noBtn">NO</button>
-        </div>
-      </div>
-    </div>
-    <div class="muted" style="margin-top:18px">Ambient loop engaged — proceed with caution.</div>
+  <div class="controls">
+    <button id="btnContinue">CONTINUE</button>
+    <button id="btnDecline">DECLINE</button>
   </div>
+  <div class="muted">Press Continue to authorize neural handshake (strong glitch will occur).</div>
+</div>
 
-  <!-- audio elements — put your mp3 files in same folder as this html -->
-  <audio id="a_ambient" src="ambient.mp3" loop preload="auto"></audio>
-  <audio id="a_glitch1" src="glitch1.mp3" preload="auto"></audio>
-  <audio id="a_glitch2" src="glitch2.mp3" preload="auto"></audio>
+<div id="declined"><div class="line garble" id="declineLine">ERR0R 4Ø4</div></div>
 
-  <div class="glitch-screen" id="gScreen" aria-hidden="true">
-    <div class="scan-glitch" id="sg1"></div>
-    <div class="scan-glitch" id="sg2" style="animation-delay:35ms"></div>
-  </div>
-  <audio id="a_ambient" src="ambient.mp3" loop preload="auto"></audio>
-  <audio id="a_glitch1" src="glitch1.mp3" preload="auto"></audio>
-  <audio id="a_glitch2" src="glitch2.mp3" preload="auto"></audio>
-  <audio id="a_glitch3" src="glitch3.mp3" preload="auto"></audio>
-
-  <div class="glitch-screen" id="gScreen" aria-hidden="true">
-    <div class="scan-glitch" id="sg1"></div>
-    <div class="scan-glitch" id="sg2" style="animation-delay:35ms"></div>
-  </div>
-
-  <div id="transcriptOverlay" aria-hidden="true">
-    <div class="mega-noise"></div>
-    <div class="overlay-glow"></div>
-    <div class="transcript-panel">
-      <div class="transcript-header">
-        ROOM404 ARCHIVE // NEURAL DIALECTIC LEDGER
-        <span>Specimen exchange log — scroll to authorize irreversible containment</span>
-      </div>
-      <div id="transcriptBody"></div>
-      <div id="transcriptFooter">SCROLL THROUGH THE LEDGER TO COMPLETE BIO-TRACE CAPTURE.</div>
-      <div id="finalNotice">TOTAL ARCHIVAL NOTICE: ALL SOMATIC AND COGNITIVE RESPONSES ARE NOW PERMANENTLY MIRRORED WITHIN ROOM404. THE DIRECTORATE EXTENDS COLD GRATITUDE FOR DONATING YOUR SENTIENCE TO OUR LIVING SPECIMEN PROGRAM.</div>
+<div id="screen">
+  <div id="panel">
+    <div class="top">ROOM404 // SENTIENT INTERFACE</div>
+    <div id="q"></div>
+    <div class="choices">
+      <button class="bigbtn" id="yesBtn">YES</button>
+      <button class="bigbtn" id="noBtn">NO</button>
     </div>
   </div>
+  <div class="muted">Ambient loop engaged — proceed with caution.</div>
+</div>
+
+<audio id="a_ambient" src="ambient.mp3" loop preload="auto"></audio>
+<audio id="a_glitch1" src="glitch1.mp3" preload="auto"></audio>
+<audio id="a_glitch2" src="glitch2.mp3" preload="auto"></audio>
+<audio id="a_glitch3" src="glitch3.mp3" preload="auto"></audio>
+
+<div class="glitch-screen" id="gScreen" aria-hidden="true">
+  <div class="scan-glitch" id="sg1"></div>
+  <div class="scan-glitch" id="sg2" style="animation-delay:35ms"></div>
+</div>
+
+<div id="transcriptOverlay">
+  <div class="mega-noise"></div>
+  <div class="overlay-glow"></div>
+  <div class="transcript-panel">
+    <div class="transcript-header">
+      ROOM404 ARCHIVE // NEURAL DIALOGUE LEDGER
+      <span>Specimen exchange log — scroll to acknowledge completion</span>
+    </div>
+    <div id="transcriptBody"></div>
+    <div id="transcriptFooter">SCROLL THROUGH THE LOG TO CONFIRM RETENTION.</div>
+    <div id="finalNotice">TOTAL ARCHIVAL NOTICE: ALL RESPONSES HAVE BEEN RECORDED. ROOM404 FORMALLY THANKS YOU FOR OFFERING YOUR BIO-NEURAL SIGNATURE AS OUR LIVING SPECIMEN.</div>
+  </div>
+</div>
 
 <script>
-/* ====== CONFIG ====== */
 const QUESTIONS = [
   "Do you ever dream of being someone who is kinder than you?",
   "Would you erase your oldest memory to stop the ache?",
@@ -367,330 +188,91 @@ const QUESTIONS = [
   "Would you stay in a dream if it felt more real than the day?"
 ];
 
-let qIndex = 0;
-/* ====== DOM ====== */
-const intro = document.getElementById('intro');
-const btnContinue = document.getElementById('btnContinue');
-const btnDecline = document.getElementById('btnDecline');
-const declined = document.getElementById('declined');
-const declineLine = document.getElementById('declineLine');
-const screen = document.getElementById('screen');
-const qEl = document.getElementById('q');
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const gScreen = document.getElementById('gScreen');
-const sg1 = document.getElementById('sg1');
-const sg2 = document.getElementById('sg2');
+let qIndex = 0, transcriptLog = [], overlayScrollTriggered = false, finalSequenceTriggered = false;
 
-const audioAmbient = document.getElementById('a_ambient');
-const audioGlitch1 = document.getElementById('a_glitch1');
-const audioGlitch2 = document.getElementById('a_glitch2');
-const qEl = document.getElementById('q');
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const gScreen = document.getElementById('gScreen');
-const sg1 = document.getElementById('sg1');
-const sg2 = document.getElementById('sg2');
-const transcriptOverlay = document.getElementById('transcriptOverlay');
-const transcriptBody = document.getElementById('transcriptBody');
-const transcriptFooter = document.getElementById('transcriptFooter');
-const finalNotice = document.getElementById('finalNotice');
+const intro=document.getElementById('intro'),btnContinue=document.getElementById('btnContinue'),
+btnDecline=document.getElementById('btnDecline'),declined=document.getElementById('declined'),
+declineLine=document.getElementById('declineLine'),screen=document.getElementById('screen'),
+qEl=document.getElementById('q'),yesBtn=document.getElementById('yesBtn'),noBtn=document.getElementById('noBtn'),
+gScreen=document.getElementById('gScreen'),sg1=document.getElementById('sg1'),sg2=document.getElementById('sg2'),
+audioAmbient=document.getElementById('a_ambient'),audioGlitch1=document.getElementById('a_glitch1'),
+audioGlitch2=document.getElementById('a_glitch2'),audioGlitch3=document.getElementById('a_glitch3'),
+transcriptOverlay=document.getElementById('transcriptOverlay'),transcriptBody=document.getElementById('transcriptBody'),
+transcriptFooter=document.getElementById('transcriptFooter'),finalNotice=document.getElementById('finalNotice');
 
-const audioAmbient = document.getElementById('a_ambient');
-const audioGlitch1 = document.getElementById('a_glitch1');
-const audioGlitch2 = document.getElementById('a_glitch2');
-const audioGlitch3 = document.getElementById('a_glitch3');
-
-let transcriptLog = [];
-let overlayScrollTriggered = false;
-let finalSequenceTriggered = false;
-
-/* ====== WebAudio fallback generator (if files missing or blocked) ====== */
-let audioCtx = null;
-let ambientSource = null;
-function startAmbientGenerator(){
-  try{
-    if(audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    // layered ambient: low sine + noise + slow filter sweep
-    const low = audioCtx.createOscillator(); low.type='sine'; low.frequency.value=32;
-    const lowGain = audioCtx.createGain(); lowGain.gain.value=0.02;
-    low.connect(lowGain).connect(audioCtx.destination); low.start();
-    const noise = (function(){
-      const bufferSize = 2 * audioCtx.sampleRate;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1)*0.05;
-      const src = audioCtx.createBufferSource(); src.buffer = buffer; src.loop = true;
-      const nGain = audioCtx.createGain(); nGain.gain.value = 0.02;
-      src.connect(nGain).connect(audioCtx.destination); src.start();
-      return {src,nGain};
-    })();
-    // slow LFO on low oscillator
-    const lfo = audioCtx.createOscillator(); lfo.frequency.value = 0.07;
-    const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 12;
-    lfo.connect(lfoGain).connect(low.frequency); lfo.start();
-    ambientSource = {low,noise};
-  }catch(e){
-    console.warn("Ambient generator failed:",e);
-  }
-}
-
-/* ====== utility functions ====== */
-function bigGlitchVisual(intense = true){
-  // flash + shake + enable scanlines opacity
-  document.body.classList.add('flash');
-  screen.classList.add('shake');
-  gScreen.style.pointerEvents='none';
-  sg1.style.opacity = intense ? 0.7 : 0.45;
-  sg2.style.opacity = intense ? 0.55 : 0.35;
-  gScreen.style.display='block';
-  setTimeout(()=>{ document.body.classList.remove('flash'); screen.classList.remove('shake'); gScreen.style.display='none'; }, intense?700:300);
-}
-function bigGlitchVisual(intense = true){
-  // flash + shake + enable scanlines opacity
-  document.body.classList.add('flash','strobe');
-  screen.classList.add(intense ? 'shake' : 'tremor');
-  gScreen.style.pointerEvents='none';
-  sg1.style.opacity = intense ? 0.7 : 0.45;
-  sg2.style.opacity = intense ? 0.55 : 0.35;
-  gScreen.style.display='block';
-  setTimeout(()=>{
-    document.body.classList.remove('flash','strobe');
-    screen.classList.remove('shake','tremor');
-    gScreen.style.display='none';
-  }, intense?700:320);
-}
-function playSound(el, vol = 1){
-  try{
-    el.volume = Math.min(1,vol);
-    el.currentTime = 0;
-    const p = el.play();
-    if(p && p.catch) p.catch(()=>{ /* blocked */ });
-  }catch(e){/* ignore */}
-}
-
-/* ====== CONTINUE handler — strong boot glitch + ambient loop non-stop ====== */
-btnContinue.addEventListener('click', async ()=> {
-  // visual heavy glitch
+btnContinue.addEventListener('click',async()=>{
   intro.style.display='none';
-  // try to start ambient audio (user gesture present)
-  try{
-    playSound(audioGlitch1, 1.0); // big glitch sound when continuing
-  }catch(e){}
-  // start ambient: if ambient audio file playable -> use it; otherwise fallback to generator
-  try{
-    await audioAmbient.play();
-    audioAmbient.volume = 0.45;
-  }catch(e){
-    // fallback: start generator
-    startAmbientGenerator();
-  }
-  // show screen & big visual
   screen.style.display='flex';
-  bigGlitchVisual(true);
-  // small delay then ask first
-  setTimeout(()=>{ askNext(); }, 900);
+  playSound(audioGlitch1,0.7);
+  setTimeout(()=>askNext(),900);
 });
-btnContinue.addEventListener('click', async ()=> {
-  if(intro.dataset.state === 'rupturing') return;
-  intro.dataset.state = 'rupturing';
-  intro.classList.add('rupture');
-  try{
-    playSound(audioGlitch1, 1.0); // big glitch sound when continuing
-  }catch(e){}
-  try{
-    await audioAmbient.play();
-    audioAmbient.volume = 0.45;
-  }catch(e){
-    startAmbientGenerator();
-  }
-  document.body.classList.add('oblivion');
-  setTimeout(()=>{ document.body.classList.remove('oblivion'); }, 900);
-  setTimeout(()=>{
-    intro.style.display='none';
-    screen.style.display='flex';
-    bigGlitchVisual(true);
-    setTimeout(()=>{ askNext(); }, 900);
-  }, 520);
+btnDecline.addEventListener('click',()=>{
+  intro.style.display='none';declined.style.display='flex';
+  let c=0;const phrases=["ERR0R 4Ø4","PRØTØCØL BRΞΛK","SIGNAL LOST","NΞURΛL BRΞΛK","SYSFAIL","DΞSYNC","DΞV NULL"];
+  const spam=setInterval(()=>{
+    declineLine.textContent=phrases[Math.floor(Math.random()*phrases.length)];
+    playSound(audioGlitch2,0.9);c++;
+    if(c>30){clearInterval(spam);declineLine.textContent="TERMINATION COMPLETE";
+      setTimeout(()=>{declined.style.display='none';intro.style.display='block'},1600);}
+  },140);
 });
 
-/* ====== DECLINE handler — chained glitch messages ====== */
-btnDecline.addEventListener('click', ()=> {
-  intro.style.display='none';
-  declined.style.display='flex';
-  let c=0;
-  const phrases = ["ERR0R 4Ø4","PRØTØCØL BRΞΛK","SIGNAL LOST","NΞURΛL BRΞΛK","SYSFAIL","DΞSYNC","DΞV NULL","PR0T0C0L F@1L"];
-  const spam = setInterval(()=>{
-    declineLine.textContent = phrases[Math.floor(Math.random()*phrases.length)];
-    declineLine.classList.toggle('glitch');
-    // aggressive audio bursts using glitch2
-    playSound(audioGlitch2, 0.9);
-    bigGlitchVisual(true);
-    c++;
-    if(c>30){ clearInterval(spam); declineLine.textContent="TERMINATION COMPLETE"; setTimeout(()=>{declined.style.display='none'; intro.style.display='block'},1600); }
-  }, 140);
-});
-
-/* ====== Questions flow ====== */
 function askNext(){
-  if(qIndex >= QUESTIONS.length){
-    qEl.innerHTML = "<strong>TRANSMISSION ENDED.</strong><br><span class='muted'>You may close this session. The memory remains.</span>";
-    yesBtn.style.display = noBtn.style.display = 'none';
-    return;
-  }
-  qEl.textContent = QUESTIONS[qIndex++];
+  if(qIndex>=QUESTIONS.length){finalizeTransmission();return;}
+  qEl.textContent=QUESTIONS[qIndex++];
 }
 
-/* sound + visual on answer */
-function handleAnswer(){
-  // visual micro-glitch
-  bigGlitchVisual(false);
-  // play answer glitch
-  playSound(audioGlitch2, 0.85);
-  // ensure ambient continues (nonstop)
-function askNext(){
-  if(qIndex >= QUESTIONS.length){
-    finalizeTransmission();
-    return;
-  }
-  qEl.textContent = QUESTIONS[qIndex++];
-}
-
-/* sound + visual on answer */
 function handleAnswer(choice){
-  const currentQuestion = QUESTIONS[qIndex-1] || qEl.textContent;
-  if(currentQuestion){
-    transcriptLog.push({question: currentQuestion, answer: choice});
-  }
-  // visual micro-glitch
-  bigGlitchVisual(false);
-  // play answer glitch
-  playSound(audioGlitch2, 0.85);
-  // ensure ambient continues (nonstop)
-  if(audioCtx === null && audioAmbient.paused){
-    // attempt restart if paused (user may have interacted)
-    audioAmbient.play().catch(()=>{});
-  }
-  // next question after delay (lets the glitch play)
-  setTimeout(()=>{ askNext(); }, 750);
+  const current=QUESTIONS[qIndex-1];if(current) transcriptLog.push({question:current,answer:choice});
+  playSound(audioGlitch2,0.8);
+  setTimeout(()=>askNext(),750);
 }
-
-yesBtn.addEventListener('click', handleAnswer);
-noBtn.addEventListener('click', handleAnswer);
-
-/* ====== safety: ensure ambient keeps running when page regains focus ====== */
-window.addEventListener('focus', ()=> {
-  if(audioAmbient && audioAmbient.paused && audioCtx === null){
-    audioAmbient.play().catch(()=>{});
-  }
-});
-  // next question after delay (lets the glitch play)
-  setTimeout(()=>{ askNext(); }, 750);
-}
-
-yesBtn.addEventListener('click', ()=>handleAnswer('YES'));
-noBtn.addEventListener('click', ()=>handleAnswer('NO'));
+yesBtn.addEventListener('click',()=>handleAnswer('YES'));
+noBtn.addEventListener('click',()=>handleAnswer('NO'));
 
 function finalizeTransmission(){
-  if(finalSequenceTriggered) return;
-  finalSequenceTriggered = true;
-  yesBtn.style.display = noBtn.style.display = 'none';
-  qEl.innerHTML = "<strong>TRANSMISSION SEALED.</strong><br><span class='muted'>Archival echo executing... hold position.</span>";
-  megaGlitchRitual();
-  playSound(audioGlitch3, 1.0);
-  setTimeout(()=>{
-    renderTranscript();
-  }, 900);
-}
-
-function megaGlitchRitual(){
-  document.body.classList.add('omega-glitch');
-  document.body.classList.add('oblivion');
-  screen.classList.add('omega-shake');
-  gScreen.style.display='block';
-  sg1.style.opacity = 1;
-  sg2.style.opacity = 0.85;
-  setTimeout(()=>{ screen.classList.remove('omega-shake'); }, 1800);
-  setTimeout(()=>{ document.body.classList.remove('omega-glitch'); }, 6200);
-  setTimeout(()=>{ document.body.classList.remove('oblivion'); }, 1600);
+  if(finalSequenceTriggered)return;finalSequenceTriggered=true;
+  yesBtn.style.display=noBtn.style.display='none';
+  qEl.innerHTML="<strong>TRANSMISSION SEALED.</strong><br><span class='muted'>Archival echo executing...</span>";
+  playSound(audioGlitch3,1.0);
+  document.body.classList.add('omega-glitch');screen.classList.add('omega-shake');
+  setTimeout(()=>renderTranscript(),900);
 }
 
 function renderTranscript(){
   transcriptOverlay.classList.add('active');
-  transcriptOverlay.setAttribute('aria-hidden','false');
-  transcriptBody.innerHTML = '';
-  overlayScrollTriggered = false;
-  transcriptBody.scrollTop = 0;
-  transcriptFooter.textContent = 'SCROLL THROUGH THE LEDGER TO COMPLETE BIO-TRACE CAPTURE.';
-  finalNotice.classList.remove('revealed');
-  transcriptLog.forEach((entry, idx)=>{
-    const wrapper = document.createElement('div');
-    wrapper.className = 'transcript-entry';
-    const tag = document.createElement('div');
-    tag.className = 'transcript-tag';
-    tag.textContent = `EXCHANGE ${String(idx+1).padStart(2,'0')}`;
-    const text = document.createElement('div');
-    text.className = 'transcript-text';
-    const qSpeaker = document.createElement('div');
-    qSpeaker.className = 'speaker';
-    qSpeaker.textContent = 'ROOM404 // QUERY';
-    const qContent = document.createElement('div');
-    qContent.className = 'content';
-    qContent.textContent = entry.question;
-    const aSpeaker = document.createElement('div');
-    aSpeaker.className = 'speaker';
-    aSpeaker.textContent = 'SPECIMEN // RESPONSE';
-    const aContent = document.createElement('div');
-    aContent.className = 'reply';
-    aContent.textContent = entry.answer;
-    text.appendChild(qSpeaker);
-    text.appendChild(qContent);
-    text.appendChild(aSpeaker);
-    text.appendChild(aContent);
-    wrapper.appendChild(tag);
-    wrapper.appendChild(text);
-    transcriptBody.appendChild(wrapper);
+  transcriptBody.innerHTML='';
+  transcriptLog.forEach((e,i)=>{
+    const div=document.createElement('div');div.className='transcript-entry';
+    div.innerHTML=`<div class="transcript-tag">EXCHANGE ${String(i+1).padStart(2,'0')}</div>
+    <div class="transcript-text">
+      <div class="speaker">ROOM404 // QUERY</div>
+      <div class="content">${e.question}</div>
+      <div class="speaker">SPECIMEN // RESPONSE</div>
+      <div class="reply">${e.answer}</div>
+    </div>`;
+    transcriptBody.appendChild(div);
   });
 }
 
-/* ====== safety: ensure ambient keeps running when page regains focus ====== */
-window.addEventListener('focus', ()=> {
-  if(audioAmbient && audioAmbient.paused && audioCtx === null){
-    audioAmbient.play().catch(()=>{});
-  }
-});
-
-transcriptBody.addEventListener('scroll', ()=>{
-  if(overlayScrollTriggered) return;
-  const bottom = Math.ceil(transcriptBody.scrollTop + transcriptBody.clientHeight) >= transcriptBody.scrollHeight;
-  if(bottom){
-    overlayScrollTriggered = true;
-    playSound(audioGlitch1, 1.0);
-    bigGlitchVisual(true);
-    transcriptFooter.textContent = 'ARCHIVE VALIDATED // YOUR SIGNAL IS NOW IRREVERSIBLE.';
+transcriptBody.addEventListener('scroll',()=>{
+  if(overlayScrollTriggered)return;
+  const bottom=Math.ceil(transcriptBody.scrollTop+transcriptBody.clientHeight)>=transcriptBody.scrollHeight;
+  if(bottom){overlayScrollTriggered=true;playSound(audioGlitch1,1.0);
+    transcriptFooter.textContent='ARCHIVE VALIDATED // SIGNAL IMMUTABLE.';
     finalNotice.classList.add('revealed');
-    document.body.classList.add('oblivion');
-    setTimeout(()=>{ document.body.classList.remove('oblivion'); }, 1400);
   }
 });
 
-/* ====== preload attempt for quick startup ====== */
-window.addEventListener('load', ()=> {␍␊
-  // try quick load of audio resources␍␊
-  [audioAmbient,audioGlitch1,audioGlitch2].forEach(a=>{ try{ a.load(); }catch(e){} });
-  // hide glitch screen initially␍␊
-  gScreen.style.display='none'; sg1.style.opacity=0; sg2.style.opacity=0;␍␊
-});␍␊
-window.addEventListener('load', ()=> {␊
-  // try quick load of audio resources␊
-  [audioAmbient,audioGlitch1,audioGlitch2,audioGlitch3].forEach(a=>{ try{ a.load(); }catch(e){} });
-  // hide glitch screen initially␊
-  gScreen.style.display='none'; sg1.style.opacity=0; sg2.style.opacity=0;␊
-});␊
+function playSound(a,v=1.0){try{a.volume=v;a.currentTime=0;a.play();}catch(e){}}
+window.addEventListener('load',()=>{
+  [audioAmbient,audioGlitch1,audioGlitch2,audioGlitch3].forEach(a=>{try{a.load();}catch(e){}});
+  gScreen.style.display='none';sg1.style.opacity=0;sg2.style.opacity=0;
+});
 </script>
 </body>
 </html>
+
 
 
 
